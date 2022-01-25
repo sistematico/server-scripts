@@ -1,27 +1,26 @@
 #!/usr/bin/liquidsoap
 
-# Log dir
-# set("log.file.path","/tmp/<script>.log")
+# Log 
 set("log.file.path","/var/log/liquidsoap.log")
 set("log.stdout",true)
 
-# Music
-main = playlist("~/playlist/main.m3u")
+# Input addr
+set("harbor.bind_addr","0.0.0.0")
 
-# Some jingles
-# jingles = playlist("~/playlist/jingles.m3u")
+# Music
+playlist = playlist("~/playlist/main.m3u")
 
 # If something goes wrong, we'll play this
 security = single("~/music/house-of-the-rising.mp3")
 
-# Start building the feed with music
-radio = main
+# An emergency file
+emergency = single("/path/to/emergency/single.ogg")
 
-# Now add some jingles
-# radio = random(weights = [1, 4],[jingles, radio])
+# A live source
+live = input.harbor("live",port=8080,password="hackme")
 
-# And finally the security
-radio = fallback(track_sensitive = false, [radio, security])
+# Create streams
+radio = fallback(track_sensitive=false, [live,playlist,emergency])
 
 # Stream it out
 output.icecast(%vorbis,
