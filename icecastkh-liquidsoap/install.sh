@@ -100,6 +100,7 @@ printf "$icecast_service_tpl" > /etc/systemd/system/icecast.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
 printf "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast.xml
+
 printf "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" > /etc/liquidsoap/radio.liq
 
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
