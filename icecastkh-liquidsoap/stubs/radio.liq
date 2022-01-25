@@ -1,7 +1,9 @@
 #!/usr/bin/liquidsoap
 
 # Log dir
-log.file.path.set("/var/log/liquidsoap.log")
+# set("log.file.path","/tmp/<script>.log")
+set("log.file.path","/var/log/liquidsoap.log")
+set("log.stdout",true)
 
 # Music
 main = playlist("~/playlist/main.m3u")
