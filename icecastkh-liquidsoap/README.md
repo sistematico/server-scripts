@@ -14,5 +14,5 @@ CLOUDFLARE_TOKEN="TOKEN"
 And run:
 
 ```bash
-curl -s https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/install.sh | bash
+curl -sNL https://bit.ly/icecastkh-liquidsoap | bash
 ```

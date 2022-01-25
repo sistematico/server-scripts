@@ -14,7 +14,7 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
-[ -f .env ] && . .env || echo "File .env not found." && exit 1
+[ -f .env ] && . .env || (echo "File .env not found." && exit 1)
 
 export DEBIAN_FRONTEND=noninteractive
 
