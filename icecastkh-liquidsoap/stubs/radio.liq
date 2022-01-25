@@ -11,10 +11,7 @@ set("harbor.bind_addr","0.0.0.0")
 playlist = playlist("~/playlist/main.m3u")
 
 # If something goes wrong, we'll play this
-security = single("~/music/house-of-the-rising.mp3")
-
-# An emergency file
-emergency = single("/path/to/emergency/single.ogg")
+emergency = single("~/music/house-of-the-rising.mp3")
 
 # A live source
 live = input.harbor("live",port=8080,password="hackme")
