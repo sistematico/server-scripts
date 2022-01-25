@@ -20,7 +20,18 @@ live = input.harbor("live",port=8080,password="hackme")
 radio = fallback(track_sensitive=false, [live,playlist,emergency])
 
 # Stream it out
+#output.icecast(%vorbis,
+#  host = "localhost", port = 8000,
+#  password = "SOURCE_PASSWD", mount = "stream",
+#  radio)
+
 output.icecast(%vorbis,
-  host = "localhost", port = 8000,
-  password = "SOURCE_PASSWD", mount = "stream",
+  host = "localhost", 
+  port = 8000,
+  user = "source",
+  password = "SOURCE_PASSWD",
+  name = "Rádio Som do Mato",
+  description = "A mais sertaneja!",
+  genre = "Various",
+  mount = "stream",
   radio)
