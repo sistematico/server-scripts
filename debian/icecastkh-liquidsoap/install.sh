@@ -26,12 +26,12 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/nginx.conf)"
-icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/icecast.service)"
-liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/liquidsoap.service)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/icecast.xml"
-radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/radio.liq"
-cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/cron.sh)"
+nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/nginx.conf)"
+icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/icecast.service)"
+liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/liquidsoap.service)"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/common/stubs/etc/icecast2/icecast-kh.xml"
+radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/radio.liq"
+cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/cron.sh)"
 
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null

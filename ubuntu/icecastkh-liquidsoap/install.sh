@@ -29,14 +29,18 @@ export DEBIAN_FRONTEND=noninteractive
 nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/nginx.conf)"
 icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/icecast.service)"
 liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/liquidsoap.service)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/icecast.xml"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/common/stubs/etc/icecast2/icecast-kh.xml"
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/radio.liq"
 cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/stubs/cron.sh)"
 
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
-apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl icecast2 liquidsoap certbot python3-certbot-dns-cloudflare nginx &> /dev/null
+if [ -z "$STREAM_FORMAT" ] || [ "$STREAM_FORMAT" == "ogg" ]; then
+    apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl icecast2 liquidsoap certbot python3-certbot-dns-cloudflare nginx &> /dev/null
+else
+    apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl icecast2 liquidsoap certbot python3-certbot-dns-cloudflare nginx &> /dev/null
+fi
 
 systemctl is-active --quiet liquidsoap && systemctl stop liquidsoap
 systemctl is-active --quiet icecast && systemctl stop icecast
@@ -45,17 +49,17 @@ systemctl is-active --quiet nginx && systemctl stop nginx
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_USER_PASSWD")
 
 if ! id "icecast" &>/dev/null; then
-    useradd -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" -U icecast
+    useradd -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" -g icecast icecast
 else
-    usermod -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" icecast
+    usermod -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" -g icecast icecast
 fi
 
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$LIQUIDSOAP_USER_PASSWD")
 
 if ! id "liquidsoap" &>/dev/null; then
-    useradd -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" -U liquidsoap
+    useradd -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" -g liquidsoap liquidsoap
 else
-    usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" liquidsoap
+    usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" -g liquidsoap liquidsoap
 fi
 
 mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts,music} 2> /dev/null
@@ -106,11 +110,11 @@ EOL
 
 printf "$icecast_service_tpl" > /etc/systemd/system/icecast.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
+printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
 curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast.xml
 curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" > /etc/liquidsoap/radio.liq
 
-printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
 curl -sLo /opt/liquidsoap/music/1949-Hitz.mp3 'https://ia800609.us.archive.org/25/items/1949Hitz1/1949%20Hitz%20%23%201.mp3'
 curl -sLo /opt/liquidsoap/music/house-of-the-rising.mp3 'https://ia601601.us.archive.org/14/items/78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b/_78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b_01_3.8_CT_EQ.mp3'
