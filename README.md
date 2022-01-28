@@ -1,3 +1,6 @@
 # Server Scripts
 
-- [Icecast KH + LiquidSoap (Debian 10)](https://github.com/sistematico/server-scripts/tree/main/icecastkh-liquidsoap)
+- Debian
+  - [Icecast KH + LiquidSoap](https://github.com/sistematico/server-scripts/tree/main/debian/icecastkh-liquidsoap)
+- Ubuntu
+  - [Icecast KH + LiquidSoap](https://github.com/sistematico/server-scripts/tree/main/ubuntu/icecastkh-liquidsoap)

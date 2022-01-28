@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+#
+# Arquivo: install.sh
+#
+# Mais um script feito com ❤️ por: 
+# - "Lucas Saliés Brum" <lucas@archlinux.com.br>
+# 
+# Criado em: 25/01/2022 10:04:47
+# Atualizado: 25/01/2022 10:04:47
 
 SOURCE_PASSWD="hackme"
 RELAY_PASSWD="hackme"
