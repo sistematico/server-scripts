@@ -36,11 +36,9 @@ youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/i
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
-#apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
-#apt install -y -q build-essential pkg-config ocaml-nox ocamlc ocaml-findlib libpcre-ocaml opam libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 apt install -y -q build-essential pkg-config opam libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 
-opam init -qy 
+opam init -qy &> /dev/null
 eval $(opam env)
 opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile -qy 
 opam update -qy 
@@ -90,7 +88,6 @@ then
 
     cd /tmp/liquidsoap-${LIQUIDSOAP_VERSION}
 
-    #./configure --prefix=/usr --with-curl-config=/usr/bin/curl-config --with-openssl
     ./configure --prefix=/usr
     make
     make install
