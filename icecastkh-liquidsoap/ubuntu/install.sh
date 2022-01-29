@@ -36,11 +36,11 @@ youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/i
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
-apt install -y -q build-essential pkg-config opam libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmp3lame-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+apt install -y -q build-essential pkg-config opam libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmp3lame-dev libmad0-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 
 opam init -qy 1> /dev/null 2> /dev/null
 eval $(opam env)
-opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile vorbis lame -y 1> /dev/null 2> /dev/null
+opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile vorbis lame mad cry -y 1> /dev/null 2> /dev/null
 opam update -y 1> /dev/null 2> /dev/null
 opam upgrade -y 1> /dev/null 2> /dev/null
 
