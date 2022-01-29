@@ -71,32 +71,11 @@ icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/i
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
 youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
-printf "${PURPLE}*${NC} Updating & Upgrading system...\n"
-apt update -y -q &> /dev/null
-apt upgrade -y -q &> /dev/null
+#printf "${PURPLE}*${NC} Updating & Upgrading system...\n"
+#apt update -y -q &> /dev/null
+#apt upgrade -y -q &> /dev/null
 
 printf "${PURPLE}*${NC} Installing required dependencies...\n"
-# apt install -y -q build-essential pkg-config opam \
-#                 libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev \
-#                 libvorbis-dev libmp3lame-dev libmad0-dev libtheora-dev libssl-dev \
-#                 libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev \
-#                 cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
-
-if ! command -v icecast2 &> /dev/null
-then
-    rm -f $(which icecast2)
-fi
-
-if ! command -v icecast &> /dev/null
-then
-    rm -f $(which icecast)
-fi
-
-if ! command -v liquidsoap &> /dev/null
-then
-    rm -f $(which liquidsoap)
-fi
-
 apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmad0-dev libtheora-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl icecast2 liquidsoap &> /dev/null
 
 printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
