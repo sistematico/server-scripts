@@ -1,8 +1,8 @@
 #!/usr/bin/liquidsoap
 
 # Log 
-settings.log.file.path.set("/var/log/liquidsoap.log")
-settings.log.stdout.set(true)
+set("log.file.path", "/var/log/liquidsoap.log")
+set("log.stdout", true)
 
 # Music
 main = mksafe(playlist("~/playlist/main.m3u"))
