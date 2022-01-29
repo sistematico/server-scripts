@@ -25,7 +25,7 @@ ICECAST_PW="hackme"
 LIQUIDSOAP_PW="hackme"
 
 # Optional
-STREAM_FORMAT="ogg" # mp3 or ogg (default: ogg)
+STREAM_FORMAT="vorbis" # mp3 or vorbis (default: vorbis)
 ```
 
 And run:

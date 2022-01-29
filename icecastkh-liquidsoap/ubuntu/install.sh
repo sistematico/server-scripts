@@ -32,7 +32,14 @@ apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
 #apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
-apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+#apt install -y -q build-essential pkg-config ocaml-nox ocamlc ocaml-findlib libpcre-ocaml opam libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+apt install -y -q build-essential pkg-config opam libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+
+opam init -qy --safe
+eval $(opam env)
+opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile -qy --safe
+opam update -qy --safe
+opam upgrade -qy --safe
 
 systemctl is-active --quiet liquidsoap && systemctl stop liquidsoap
 systemctl is-active --quiet icecast && systemctl stop icecast
