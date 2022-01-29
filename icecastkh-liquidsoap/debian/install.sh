@@ -5,44 +5,40 @@
 # Mais um script feito com ❤️ por: 
 # - "Lucas Saliés Brum" <lucas@archlinux.com.br>
 # 
-# Criado em: 25/01/2022 10:04:47
-# Atualizado: 25/01/2022 10:04:47
-
-SOURCE_PASSWD="hackme"
-RELAY_PASSWD="hackme"
-ADMIN_PASSWD="hackme"
-
-ICECAST_USER_PASSWD="hackme"
-LIQUIDSOAP_USER_PASSWD="hackme"
+# Created on: 25/01/2022 10:04:47
+# Updated on: 29/01/2022 05:24:04
 
 ICECAST_VERSION="2.4.0-kh15"
+LIQUIDSOAP_VERSION="2.0.2"
 
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root."
     exit
 fi
 
-[ -f .env ] && . .env || (echo "File .env not found." && exit 1)
+[ -f .env ] && . .env || (echo ".env file not found." && exit 1)
 
 export DEBIAN_FRONTEND=noninteractive
 
 nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/nginx.conf)"
-icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/icecast.service)"
+icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/icecast-kh.service)"
 liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/liquidsoap.service)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/common/stubs/etc/icecast2/icecast-kh.xml"
-radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/radio.liq"
 cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/cron.sh)"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast/icecast-kh.xml"
+radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
+youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
-apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl icecast2 liquidsoap certbot python3-certbot-dns-cloudflare nginx &> /dev/null
+#apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 
 systemctl is-active --quiet liquidsoap && systemctl stop liquidsoap
 systemctl is-active --quiet icecast && systemctl stop icecast
 systemctl is-active --quiet nginx && systemctl stop nginx
 
-pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_USER_PASSWD")
+pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_PW")
 
 if ! id "icecast" &>/dev/null; then
     useradd -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" -U icecast
@@ -50,7 +46,7 @@ else
     usermod -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" icecast
 fi
 
-pass=$(perl -e 'print crypt($ARGV[0], "password")' "$LIQUIDSOAP_USER_PASSWD")
+pass=$(perl -e 'print crypt($ARGV[0], "password")' "$LIQUIDSOAP_PW")
 
 if ! id "liquidsoap" &>/dev/null; then
     useradd -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" -U liquidsoap
@@ -60,6 +56,7 @@ fi
 
 mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts,music} 2> /dev/null
 
+# Icecast KH Build
 if ! command -v icecast &> /dev/null
 then
     curl -sL https://github.com/karlheyes/icecast-kh/archive/refs/tags/icecast-${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
@@ -67,7 +64,21 @@ then
 
     cd /tmp/icecast-kh-icecast-${ICECAST_VERSION}
 
-    ./configure --with-curl-config=/usr/bin/curl-config --with-openssl
+    ./configure --prefix=/usr --with-curl-config=/usr/bin/curl-config --with-openssl
+    make
+    make install
+fi
+
+# LiquidSoap Build
+if ! command -v liquidsoap &> /dev/null
+then
+    curl -sL https://github.com/savonet/liquidsoap/releases/download/v${LIQUIDSOAP_VERSION}/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2 > /tmp/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2
+    tar xjf /tmp/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2 -C /tmp/
+
+    cd /tmp/liquidsoap-${LIQUIDSOAP_VERSION}
+
+    #./configure --prefix=/usr --with-curl-config=/usr/bin/curl-config --with-openssl
+    ./configure --prefix=/usr
     make
     make install
 fi
@@ -104,7 +115,7 @@ cat >/etc/tmpfiles.d/liquidsoap.conf <<EOL
 f /run/liquidsoap.pid 0644 liquidsoap liquidsoap
 EOL
 
-printf "$icecast_service_tpl" > /etc/systemd/system/icecast.service
+printf "$icecast_service_tpl" > /etc/systemd/system/icecast-kh.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
 curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast.xml
@@ -134,4 +145,4 @@ ln -fs /usr/share/liquidsoap/libs /usr/share/liquidsoap/1.4.1
 systemctl daemon-reload
 systemctl enable icecast liquidsoap
 systemctl restart nginx cron
-systemctl start icecast liquidsoap
+systemctl start icecast-kh liquidsoap
