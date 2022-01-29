@@ -80,12 +80,12 @@ apt upgrade -y -q &> /dev/null
 printf "${PURPLE}*${NC} Installing required dependencies...\n"
 apt install -y -q build-essential pkg-config opam \
                 libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev \
-                libvorbis-dev libmp3lame-dev libmad0-dev libtheora-dev \
-                libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl \
-                libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev &> /dev/null
+                libvorbis-dev libmp3lame-dev libmad0-dev libtheora-dev libssl-dev \
+                libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev \
+                cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 
 opam init -qy 1> /dev/null 2> /dev/null
-eval $(opam env) 1> /dev/null 2> /dev/null
+OPAMROOTISOK="y" eval $(opam env) 1> /dev/null 2> /dev/null
 opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile vorbis lame mad cry ffmpeg -y 1> /dev/null 2> /dev/null
 opam update -y 1> /dev/null 2> /dev/null
 opam upgrade -y 1> /dev/null 2> /dev/null
@@ -117,7 +117,6 @@ fi
 mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts,music} 2> /dev/null
 
 printf "${PURPLE}*${NC} Installing icecast-kh from sources...\n"
-# Icecast KH Build
 if ! command -v icecast &> /dev/null
 then
     curl -sL https://github.com/karlheyes/icecast-kh/archive/refs/tags/icecast-${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
@@ -131,7 +130,6 @@ then
 fi
 
 printf "${PURPLE}*${NC} Installing liquidsoap from sources...\n"
-# LiquidSoap Build
 if ! command -v liquidsoap &> /dev/null
 then
     curl -sL https://github.com/savonet/liquidsoap/releases/download/v${LIQUIDSOAP_VERSION}/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2 > /tmp/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2
@@ -182,7 +180,7 @@ printf "${PURPLE}*${NC} Creating systemd units...\n"
 printf "$icecast_service_tpl" > /etc/systemd/system/icecast-kh.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
-curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast.xml
+curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast-kh.xml
 curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|" -e "s|STREAM_NAME|$STREAM_NAME|" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|" -e "s|STREAM_GENRE|$STREAM_GENRE|" > /etc/liquidsoap/radio.liq
 
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
@@ -224,7 +222,8 @@ chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidso
 [ ! -d /usr/share/liquidsoap/libs ] && mkdir -p /usr/share/liquidsoap/libs
 ln -fs /usr/share/liquidsoap/libs /usr/share/liquidsoap/1.4.1
 
-systemctl daemon-reload
-systemctl enable icecast-kh liquidsoap
+systemctl daemon-reload 
+printf "${PURPLE}*${NC} Enabling services...\n"
+systemctl enable icecast-kh liquidsoap &> /dev/null
 systemctl restart nginx cron
 systemctl start icecast-kh liquidsoap
