@@ -36,11 +36,15 @@ youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/i
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
-apt install -y -q build-essential pkg-config opam libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmp3lame-dev libmad0-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+apt install -y -q build-essential pkg-config opam \
+                libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev \ 
+                libvorbis-dev libmp3lame-dev libmad0-dev libtheora-dev \ 
+                libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl \ 
+                libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev &> /dev/null
 
 opam init -qy 1> /dev/null 2> /dev/null
-eval $(opam env)
-opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile vorbis lame mad cry -y 1> /dev/null 2> /dev/null
+eval $(opam env) 2> /dev/null
+opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile vorbis lame mad cry ffmpeg -y 1> /dev/null 2> /dev/null
 opam update -y 1> /dev/null 2> /dev/null
 opam upgrade -y 1> /dev/null 2> /dev/null
 
@@ -136,12 +140,23 @@ printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 # curl -sLo /opt/liquidsoap/music/house-of-the-rising.mp3 'https://ia601601.us.archive.org/14/items/78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b/_78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b_01_3.8_CT_EQ.mp3'
 # curl -sLo /opt/liquidsoap/music/1949-Hitz.mp3 'https://ia800609.us.archive.org/25/items/1949Hitz1/1949%20Hitz%20%23%201.mp3'
 
-curl -sLo '/opt/liquidsoap/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
-curl -sLo '/opt/liquidsoap/music/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
-curl -sLo '/opt/liquidsoap/music/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
-curl -sLo '/opt/liquidsoap/music/Lykke Li - I Follow Rivers.mp3' 'https://drive.google.com/uc?export=download&id=186I-JL5ncUdg6TC8ootbeDJ12jHEJHFj'
-curl -sLo '/opt/liquidsoap/music/Rag n Bone Man - Giant.mp3' 'https://drive.google.com/uc?export=download&id=1AT8vukswiyQoiEDd4xlq9tCxE4ejpk39'
-curl -sLo '/opt/liquidsoap/music/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
+[ ! -f '/opt/liquidsoap/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
+    
+[ ! -f '/opt/liquidsoap/music/DubDogz - Baila Conmigo.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
+
+[ ! -f '/opt/liquidsoap/music/Lil Peep & XXXTENTACION - Falling Down.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
+
+[ ! -f '/opt/liquidsoap/music/Lykke Li - I Follow Rivers.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/Lykke Li - I Follow Rivers.mp3' 'https://drive.google.com/uc?export=download&id=186I-JL5ncUdg6TC8ootbeDJ12jHEJHFj'
+
+[ ! -f '/opt/liquidsoap/music/Rag n Bone Man - Giant.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/Rag n Bone Man - Giant.mp3' 'https://drive.google.com/uc?export=download&id=1AT8vukswiyQoiEDd4xlq9tCxE4ejpk39'
+
+[ ! -f '/opt/liquidsoap/music/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
 
 if ! grep --quiet liquidsoap /etc/crontab; then
     echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh main 2>&1' >> /etc/crontab
