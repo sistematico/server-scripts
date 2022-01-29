@@ -45,7 +45,7 @@
         <logdir>/usr/share/icecast/logs</logdir>
         <webroot>/usr/share/icecast/web</webroot>
         <adminroot>/usr/share/icecast/admin</adminroot>
-        <pidfile>/var/run/icecast.pid</pidfile>
+        <pidfile>/run/icecast.pid</pidfile>
         <ssl_certificate>/usr/share/icecast/icecast.pem</ssl_certificate>
         <alias source="/" dest="/status.xsl"/>
     </paths>
