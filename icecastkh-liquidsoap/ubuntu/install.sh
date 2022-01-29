@@ -62,7 +62,8 @@ printf "${YELLOW}|_ _|_ __  ___| |_ __ _| | | ___ _ __ \n"
 printf "${YELLOW} | || '_ \/ __| __/ _\` | | |/ _ \ '__|\n"
 printf "${YELLOW} | || | | \__ \ || (_| | | |  __/ |   \n"
 printf "${YELLOW}|___|_| |_|___/\__\__,_|_|_|\___|_|   \n"
-printf "${PURPLE}************************************************${NC}\n"                                     
+printf "${PURPLE}************************************************${NC}\n"   
+printf "\n"
 
 
 nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
