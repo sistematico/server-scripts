@@ -118,19 +118,19 @@ fi
 printf "${PURPLE}*${NC} Creating liquidsoap user...\n"
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$LIQUIDSOAP_PW")
 
-if ! id "liquidsoap" &>/dev/null; then
-    useradd -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" -U liquidsoap
-else
+if id "liquidsoap" &>/dev/null; then
     usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" liquidsoap
 fi
 
 mkdir -p /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{main,eletronica} 2> /dev/null
 
 printf "${PURPLE}*${NC} Creating certs...\n"
+if [ ! -f /etc/cloudflare.ini ]; then
 cat >/etc/cloudflare.ini <<-EOL
 dns_cloudflare_email = ${CLOUDFLARE_EMAIL}
 dns_cloudflare_api_key = ${CLOUDFLARE_TOKEN}
 EOL
+fi
 
 chmod 600 /etc/cloudflare.ini
 
@@ -149,10 +149,12 @@ fi
 
 [ -L /etc/nginx/sites-enabled/default ] && rm -f /etc/nginx/sites-enabled/default
 
-printf "${PURPLE}*${NC} Creating nginx proxy...\n"
-printf "$nginx_tpl" | sed -e "s|STREAM_URL|$STREAM_URL|" > /etc/nginx/sites-available/${STREAM_URL}
+if ! -f /etc/nginx/sites-available/${STREAM_URL}; then
+    printf "${PURPLE}*${NC} Creating nginx proxy...\n"
+    printf "$nginx_tpl" | sed -e "s|STREAM_URL|$STREAM_URL|" > /etc/nginx/sites-available/${STREAM_URL}
+fi
 
-ln -sf /etc/nginx/sites-available/${STREAM_URL} /etc/nginx/sites-enabled/${STREAM_URL}
+[ ! -L /etc/nginx/sites-enabled/${STREAM_URL} ] && ln -sf /etc/nginx/sites-available/${STREAM_URL} /etc/nginx/sites-enabled/${STREAM_URL}
 
 [ ! -d /etc/tmpfiles.d ] && mkdir /etc/tmpfiles.d
 
@@ -212,7 +214,7 @@ touch /var/log/liquidsoap.log
 
 printf "${PURPLE}*${NC} Fixing permissions...\n"
 chown -R icecast:icecast /var/log/icecast2 /usr/share/icecast2 /etc/icecast2
-chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log
+chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log /usr/share/liquidsoap
 
 [ ! -d /usr/share/liquidsoap/libs ] && mkdir -p /usr/share/liquidsoap/libs
 ln -fs /usr/share/liquidsoap/libs /usr/share/liquidsoap/1.4.1

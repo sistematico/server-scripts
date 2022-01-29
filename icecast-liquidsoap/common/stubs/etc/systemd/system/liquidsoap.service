@@ -5,7 +5,8 @@ Documentation=http://liquidsoap.fm
 
 [Service]
 #Type=forking
-Type=simple
+#Type=simple
+Type=oneshot
 User=liquidsoap
 PIDFile=/run/liquidsoap.pid
 ExecStart=/usr/bin/liquidsoap /etc/liquidsoap/radio.liq
