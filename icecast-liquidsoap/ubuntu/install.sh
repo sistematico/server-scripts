@@ -8,7 +8,7 @@
 # Created on: 25/01/2022 10:04:47
 # Updated on: 29/01/2022 05:24:04
 
-ICECAST_VERSION="2.4.0-kh15"
+ICECAST_VERSION="2.4.3"
 LIQUIDSOAP_VERSION="2.0.2"
 
 if [ "$EUID" -ne 0 ]; then
@@ -36,7 +36,7 @@ youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/i
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
-apt install -y -q build-essential pkg-config opam libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmp3lame-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+apt install -y -q build-essential pkg-config opam libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 
 opam init -qy 1> /dev/null 2> /dev/null
 eval $(opam env)
@@ -70,11 +70,9 @@ mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist
 # Icecast KH Build
 if ! command -v icecast &> /dev/null
 then
-    curl -sL https://github.com/karlheyes/icecast-kh/archive/refs/tags/icecast-${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
+    curl -sL https://gitlab.xiph.org/xiph/icecast-server/-/archive/v${ICECAST_VERSION}/icecast-server-v${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
     tar xzf /tmp/icecast-${ICECAST_VERSION}.tar.gz -C /tmp/
-
     cd /tmp/icecast-kh-icecast-${ICECAST_VERSION}
-
     ./configure --prefix=/usr --with-curl-config=/usr/bin/curl-config --with-openssl
     make
     make install
