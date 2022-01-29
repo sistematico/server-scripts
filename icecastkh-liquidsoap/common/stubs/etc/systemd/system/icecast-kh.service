@@ -7,7 +7,7 @@ Type=simple
 Restart=always
 User=icecast
 ExecStart=/usr/bin/icecast -b -c /etc/icecast/icecast-kh.xml
-PIDFile=/run/icecast.pid
+PIDFile=/var/run/icecast.pid
 KillMode=process
 RemainAfterExit=yes
 
