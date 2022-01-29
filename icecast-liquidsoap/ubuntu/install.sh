@@ -128,7 +128,7 @@ fi
 
 [ -L /etc/nginx/sites-enabled/default ] && rm -f /etc/nginx/sites-enabled/default
 
-if ! -f /etc/nginx/sites-available/${STREAM_URL}; then
+if [ ! -f /etc/nginx/sites-available/${STREAM_URL} ]; then
     printf "${PURPLE}*${NC} Creating nginx proxy...\n"
     printf "$nginx_tpl" | sed -e "s|STREAM_URL|$STREAM_URL|" > /etc/nginx/sites-available/${STREAM_URL}
 fi
