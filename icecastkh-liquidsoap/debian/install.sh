@@ -20,11 +20,11 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/nginx.conf)"
-icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/icecast-kh.service)"
-liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/liquidsoap.service)"
-cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/debian/icecastkh-liquidsoap/stubs/cron.sh)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast/icecast-kh.xml"
+nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
+icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/icecast-kh.service)"
+liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
+cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast2/icecast-kh.xml"
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
 youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
@@ -36,6 +36,7 @@ apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev 
 
 systemctl is-active --quiet liquidsoap && systemctl stop liquidsoap
 systemctl is-active --quiet icecast && systemctl stop icecast
+systemctl is-active --quiet icecast-kh && systemctl stop icecast-kh
 systemctl is-active --quiet nginx && systemctl stop nginx
 
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_PW")
@@ -119,12 +120,19 @@ printf "$icecast_service_tpl" > /etc/systemd/system/icecast-kh.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
 curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast.xml
-curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" > /etc/liquidsoap/radio.liq
+curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|" -e "s|STREAM_NAME|$STREAM_NAME|" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|" -e "s|STREAM_GENRE|$STREAM_GENRE|" > /etc/liquidsoap/radio.liq
 
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
-curl -sLo /opt/liquidsoap/music/1949-Hitz.mp3 'https://ia800609.us.archive.org/25/items/1949Hitz1/1949%20Hitz%20%23%201.mp3'
-curl -sLo /opt/liquidsoap/music/house-of-the-rising.mp3 'https://ia601601.us.archive.org/14/items/78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b/_78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b_01_3.8_CT_EQ.mp3'
+# curl -sLo /opt/liquidsoap/music/house-of-the-rising.mp3 'https://ia601601.us.archive.org/14/items/78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b/_78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b_01_3.8_CT_EQ.mp3'
+# curl -sLo /opt/liquidsoap/music/1949-Hitz.mp3 'https://ia800609.us.archive.org/25/items/1949Hitz1/1949%20Hitz%20%23%201.mp3'
+
+curl -sLo '/opt/liquidsoap/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
+curl -sLo '/opt/liquidsoap/music/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
+curl -sLo '/opt/liquidsoap/music/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
+curl -sLo '/opt/liquidsoap/music/Lykke Li - I Follow Rivers.mp3' 'https://drive.google.com/uc?export=download&id=186I-JL5ncUdg6TC8ootbeDJ12jHEJHFj'
+curl -sLo '/opt/liquidsoap/music/Rag n Bone Man - Giant.mp3' 'https://drive.google.com/uc?export=download&id=1AT8vukswiyQoiEDd4xlq9tCxE4ejpk39'
+curl -sLo '/opt/liquidsoap/music/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
 
 if ! grep --quiet liquidsoap /etc/crontab; then
     echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh main 2>&1' >> /etc/crontab

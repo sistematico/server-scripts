@@ -11,7 +11,7 @@ set("harbor.bind_addr","0.0.0.0")
 playlist = playlist("~/playlist/main.m3u")
 
 # If something goes wrong, we'll play this
-emergency = single("~/music/house-of-the-rising.mp3")
+emergency = single("~/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3")
 
 # A live source
 live = input.harbor("live",port=8080,password="hackme")
@@ -27,6 +27,6 @@ output.icecast(%STREAM_FORMAT,
   password = "SOURCE_PASSWD",
   name = "STREAM_NAME",
   description = "STREAM_DESCRIPTION",
-  genre = "Various",
+  genre = "STREAM_GENRE",
   mount = "stream",
   radio)
