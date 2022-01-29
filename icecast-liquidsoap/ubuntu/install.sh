@@ -82,14 +82,29 @@ printf "${PURPLE}*${NC} Installing required dependencies...\n"
 #                 libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev \
 #                 cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 
-apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmad0-dev libtheora-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+if ! command -v icecast2 &> /dev/null
+then
+    rm -f $(which icecast2)
+fi
+
+if ! command -v icecast &> /dev/null
+then
+    rm -f $(which icecast)
+fi
+
+if ! command -v liquidsoap &> /dev/null
+then
+    rm -f $(which liquidsoap)
+fi
+
+apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmad0-dev libtheora-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl icecast2 liquidsoap &> /dev/null
 
 printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
 systemctl is-active --quiet iptables && systemctl --now disable iptables
 systemctl is-active --quiet liquidsoap && systemctl --now disable liquidsoap
+systemctl is-active --quiet icecast2 && systemctl --now disable icecast2
 systemctl is-active --quiet icecast && systemctl --now disable icecast
 systemctl is-active --quiet icecast-kh && systemctl --now disable icecast-kh
-systemctl is-active --quiet nginx && systemctl --now disable nginx
 
 printf "${PURPLE}*${NC} Creating icecast user...\n"
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_PW")
@@ -110,32 +125,6 @@ else
 fi
 
 mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{main,eletronica} 2> /dev/null
-
-printf "${PURPLE}*${NC} Installing icecast-kh from sources...\n"
-if ! command -v icecast &> /dev/null
-then
-    curl -sL https://github.com/karlheyes/icecast-kh/archive/refs/tags/icecast-${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
-    tar xzf /tmp/icecast-${ICECAST_VERSION}.tar.gz -C /tmp/
-
-    cd /tmp/icecast-kh-icecast-${ICECAST_VERSION}
-
-    ./configure --prefix=/usr --with-curl-config=/usr/bin/curl-config --with-openssl
-    make
-    make install
-fi
-
-printf "${PURPLE}*${NC} Installing liquidsoap from sources...\n"
-if ! command -v liquidsoap &> /dev/null
-then
-    curl -sL https://github.com/savonet/liquidsoap/releases/download/v${LIQUIDSOAP_VERSION}/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2 > /tmp/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2
-    tar xjf /tmp/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2 -C /tmp/
-
-    cd /tmp/liquidsoap-${LIQUIDSOAP_VERSION}
-
-    ./configure --prefix=/usr
-    make
-    make install
-fi
 
 printf "${PURPLE}*${NC} Creating certs...\n"
 cat >/etc/cloudflare.ini <<-EOL
