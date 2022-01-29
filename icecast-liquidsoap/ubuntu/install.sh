@@ -6,10 +6,25 @@
 # - "Lucas Saliés Brum" <lucas@archlinux.com.br>
 # 
 # Created on: 25/01/2022 10:04:47
-# Updated on: 29/01/2022 05:24:04
+# Updated on: 29/01/2022 11:44:58
 
-ICECAST_VERSION="2.4.3"
-LIQUIDSOAP_VERSION="2.0.2"
+BLACK='\033[0;30m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+ORANGE='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+LGRAY='\033[0;37m'
+DGRAY='\033[1;30m'
+LRED='\033[1;31m'
+LGREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+LBLUE='\033[1;34m'
+LPURPLE='\033[1;35m'
+LCYAN='\033[1;36m'
+WHITE='\033[1;37m'
+NC='\033[0m' # No Color
 
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root."
@@ -25,30 +40,58 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
-icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/systemd/system/icecast.service)"
-liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
-cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/icecast/icecast.xml"
-radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
-youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
+printf "${PURPLE}************************************************\n"
+printf "${GREEN} ___                       _           \n"
+printf "${GREEN}|_ _|___ ___  ___ __ _ ___| |_     _   \n"
+printf "${GREEN} | |/ __/ _ \/ __/ _\` / __| __|  _| |_ \n"
+printf "${GREEN} | | (_|  __/ (_| (_| \__ \ |_  |_   _|\n"
+printf "${GREEN}|___\___\___|\___\__,_|___/\__|   |_|  \n"
+printf "\n"                                     
+printf "${RED} _     _             _     _ ____                    \n"
+printf "${RED}| |   (_) __ _ _   _(_) __| / ___|  ___   __ _ _ __  \n"
+printf "${RED}| |   | |/ _\` | | | | |/ _\` \___ \ / _ \ / _\` | '_ \ \n"
+printf "${RED}| |___| | (_| | |_| | | (_| |___) | (_) | (_| | |_) |\n"
+printf "${RED}|_____|_|\__, |\__,_|_|\__,_|____/ \___/ \__,_| .__/ \n"
+printf "${RED}            |_|                               |_|    \n"
+printf "\n"
+printf "${YELLOW} ___           _        _ _           \n"
+printf "${YELLOW}|_ _|_ __  ___| |_ __ _| | | ___ _ __ \n"
+printf "${YELLOW} | || '_ \/ __| __/ _\` | | |/ _ \ '__|\n"
+printf "${YELLOW} | || | | \__ \ || (_| | | |  __/ |   \n"
+printf "${YELLOW}|___|_| |_|___/\__\__,_|_|_|\___|_|   \n"
+printf "${PURPLE}************************************************${NC}\n"   
+printf "\n"
 
+
+nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
+icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/icecast-kh.service)"
+liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
+cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast/icecast-kh.xml"
+radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
+youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
+
+printf "${PURPLE}*${NC} Updating & Upgrading system...\n"
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
-apt install -y -q build-essential pkg-config opam libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+printf "${PURPLE}*${NC} Installing required dependencies...\n"
+# apt install -y -q build-essential pkg-config opam \
+#                 libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev \
+#                 libvorbis-dev libmp3lame-dev libmad0-dev libtheora-dev libssl-dev \
+#                 libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev \
+#                 cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 
-opam init -qy 1> /dev/null 2> /dev/null
-eval $(opam env)
-opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile vorbis lame -y 1> /dev/null 2> /dev/null
-opam update -y 1> /dev/null 2> /dev/null
-opam upgrade -y 1> /dev/null 2> /dev/null
+apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmad0-dev libtheora-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 
-systemctl is-active --quiet liquidsoap && systemctl stop liquidsoap
-systemctl is-active --quiet icecast && systemctl stop icecast
-systemctl is-active --quiet icecast-kh && systemctl stop icecast-kh
-systemctl is-active --quiet nginx && systemctl stop nginx
+printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
+systemctl is-active --quiet iptables && systemctl --now disable iptables
+systemctl is-active --quiet liquidsoap && systemctl --now disable liquidsoap
+systemctl is-active --quiet icecast && systemctl --now disable icecast
+systemctl is-active --quiet icecast-kh && systemctl --now disable icecast-kh
+systemctl is-active --quiet nginx && systemctl --now disable nginx
 
+printf "${PURPLE}*${NC} Creating icecast user...\n"
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_PW")
 
 if ! id "icecast" &>/dev/null; then
@@ -57,6 +100,7 @@ else
     usermod -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" icecast
 fi
 
+printf "${PURPLE}*${NC} Creating liquidsoap user...\n"
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$LIQUIDSOAP_PW")
 
 if ! id "liquidsoap" &>/dev/null; then
@@ -65,20 +109,22 @@ else
     usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" liquidsoap
 fi
 
-mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts,music} 2> /dev/null
+mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{main,eletronica} 2> /dev/null
 
-# Icecast2 Build
+printf "${PURPLE}*${NC} Installing icecast-kh from sources...\n"
 if ! command -v icecast &> /dev/null
 then
-    curl -sL https://gitlab.xiph.org/xiph/icecast-server/-/archive/v${ICECAST_VERSION}/icecast-server-v${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
+    curl -sL https://github.com/karlheyes/icecast-kh/archive/refs/tags/icecast-${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
     tar xzf /tmp/icecast-${ICECAST_VERSION}.tar.gz -C /tmp/
+
     cd /tmp/icecast-kh-icecast-${ICECAST_VERSION}
+
     ./configure --prefix=/usr --with-curl-config=/usr/bin/curl-config --with-openssl
     make
     make install
 fi
 
-# LiquidSoap Build
+printf "${PURPLE}*${NC} Installing liquidsoap from sources...\n"
 if ! command -v liquidsoap &> /dev/null
 then
     curl -sL https://github.com/savonet/liquidsoap/releases/download/v${LIQUIDSOAP_VERSION}/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2 > /tmp/liquidsoap-${LIQUIDSOAP_VERSION}.tar.bz2
@@ -91,6 +137,7 @@ then
     make install
 fi
 
+printf "${PURPLE}*${NC} Creating certs...\n"
 cat >/etc/cloudflare.ini <<-EOL
 dns_cloudflare_email = ${CLOUDFLARE_EMAIL}
 dns_cloudflare_api_key = ${CLOUDFLARE_TOKEN}
@@ -113,6 +160,7 @@ fi
 
 [ -L /etc/nginx/sites-enabled/default ] && rm -f /etc/nginx/sites-enabled/default
 
+printf "${PURPLE}*${NC} Creating nginx proxy...\n"
 printf "$nginx_tpl" | sed -e "s|STREAM_URL|$STREAM_URL|" > /etc/nginx/sites-available/${STREAM_URL}
 
 ln -sf /etc/nginx/sites-available/${STREAM_URL} /etc/nginx/sites-enabled/${STREAM_URL}
@@ -123,41 +171,60 @@ cat >/etc/tmpfiles.d/liquidsoap.conf <<EOL
 f /run/liquidsoap.pid 0644 liquidsoap liquidsoap
 EOL
 
-printf "$icecast_service_tpl" > /etc/systemd/system/icecast-kh.service
+printf "${PURPLE}*${NC} Creating systemd units...\n"
+printf "$icecast_service_tpl" > /etc/systemd/system/icecast.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
+[ "$STREAM_FORMAT" == "vorbis" ] && STREAM_EXT="ogg" || STREAM_EXT="mp3"
+
 curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast.xml
-curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|" -e "s|STREAM_NAME|$STREAM_NAME|" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|" -e "s|STREAM_GENRE|$STREAM_GENRE|" > /etc/liquidsoap/radio.liq
+curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|g" -e "s|STREAM_EXT|$STREAM_EXT|g" -e "s|STREAM_NAME|$STREAM_NAME|g" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|g" -e "s|STREAM_GENRE|$STREAM_GENRE|g" > /etc/liquidsoap/radio.liq
 
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
-# curl -sLo /opt/liquidsoap/music/house-of-the-rising.mp3 'https://ia601601.us.archive.org/14/items/78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b/_78_house-of-the-rising-sun_josh-white-and-his-guitar_gbia0001628b_01_3.8_CT_EQ.mp3'
-# curl -sLo /opt/liquidsoap/music/1949-Hitz.mp3 'https://ia800609.us.archive.org/25/items/1949Hitz1/1949%20Hitz%20%23%201.mp3'
+printf "${PURPLE}*${NC} Downloading samples...\n"
+[ ! -f '/opt/liquidsoap/music/main/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/main/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
 
-curl -sLo '/opt/liquidsoap/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
-curl -sLo '/opt/liquidsoap/music/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
-curl -sLo '/opt/liquidsoap/music/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
-curl -sLo '/opt/liquidsoap/music/Lykke Li - I Follow Rivers.mp3' 'https://drive.google.com/uc?export=download&id=186I-JL5ncUdg6TC8ootbeDJ12jHEJHFj'
-curl -sLo '/opt/liquidsoap/music/Rag n Bone Man - Giant.mp3' 'https://drive.google.com/uc?export=download&id=1AT8vukswiyQoiEDd4xlq9tCxE4ejpk39'
-curl -sLo '/opt/liquidsoap/music/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
+[ ! -f '/opt/liquidsoap/music/main/DubDogz - Baila Conmigo.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/main/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
 
-if ! grep --quiet liquidsoap /etc/crontab; then
+[ ! -f '/opt/liquidsoap/music/main/Lil Peep & XXXTENTACION - Falling Down.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/main/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
+
+[ ! -f '/opt/liquidsoap/music/eletronica/Lykke Li - I Follow Rivers.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/eletronica/Lykke Li - I Follow Rivers.mp3' 'https://drive.google.com/uc?export=download&id=186I-JL5ncUdg6TC8ootbeDJ12jHEJHFj'
+
+[ ! -f '/opt/liquidsoap/music/eletronica/Rag n Bone Man - Giant.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/eletronica/Rag n Bone Man - Giant.mp3' 'https://drive.google.com/uc?export=download&id=1AT8vukswiyQoiEDd4xlq9tCxE4ejpk39'
+
+[ ! -f '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
+
+if ! grep --quiet 'cron.sh main' /etc/crontab; then
     echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh main 2>&1' >> /etc/crontab
+fi
+
+if ! grep --quiet 'cron.sh eletronica' /etc/crontab; then
+    echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh eletronica 2>&1' >> /etc/crontab
 fi
 
 [ ! -d /usr/share/liquidsoap/1.4.1 ] && mkdir /usr/share/liquidsoap/1.4.1
 
+printf "${PURPLE}*${NC} Running first cron job(playlists)...\n"
 /bin/bash /opt/liquidsoap/scripts/cron.sh main
+/bin/bash /opt/liquidsoap/scripts/cron.sh eletronica
 
 touch /var/log/icecast.log /var/log/liquidsoap.log
 
+printf "${PURPLE}*${NC} Fixing permissions...\n"
 chown -R icecast:icecast /var/log/icecast /usr/share/icecast /etc/icecast /var/log/icecast.log
 chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log
 
 [ ! -d /usr/share/liquidsoap/libs ] && mkdir -p /usr/share/liquidsoap/libs
 ln -fs /usr/share/liquidsoap/libs /usr/share/liquidsoap/1.4.1
 
-systemctl daemon-reload
-systemctl enable icecast liquidsoap
-systemctl restart nginx cron
-systemctl start icecast-kh liquidsoap
+systemctl daemon-reload 
+printf "${PURPLE}*${NC} Enabling services...\n"
+systemctl enable icecast liquidsoap &> /dev/null
+systemctl restart nginx cron icecast liquidsoap
