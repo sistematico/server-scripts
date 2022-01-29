@@ -69,7 +69,7 @@ nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scr
 icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/icecast-kh.service)"
 liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
 cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast2/icecast-kh.xml"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast/icecast-kh.xml"
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
 youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
@@ -91,10 +91,10 @@ opam update -y 1> /dev/null 2> /dev/null
 opam upgrade -y 1> /dev/null 2> /dev/null
 
 printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
-systemctl is-active --quiet liquidsoap && systemctl stop liquidsoap
-systemctl is-active --quiet icecast && systemctl stop icecast
-systemctl is-active --quiet icecast-kh && systemctl stop icecast-kh
-systemctl is-active --quiet nginx && systemctl stop nginx
+systemctl is-active --quiet liquidsoap && systemctl --now disable liquidsoap
+systemctl is-active --quiet icecast && systemctl --now disable icecast
+systemctl is-active --quiet icecast-kh && systemctl --now disable icecast-kh
+systemctl is-active --quiet nginx && systemctl --now disable nginx
 
 printf "${PURPLE}*${NC} Creating icecast user...\n"
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_PW")
@@ -225,6 +225,6 @@ chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidso
 ln -fs /usr/share/liquidsoap/libs /usr/share/liquidsoap/1.4.1
 
 systemctl daemon-reload
-systemctl enable icecast liquidsoap
+systemctl enable icecast-kh liquidsoap
 systemctl restart nginx cron
 systemctl start icecast-kh liquidsoap
