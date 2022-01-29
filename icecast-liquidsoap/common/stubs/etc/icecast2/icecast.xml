@@ -13,10 +13,10 @@
     </limits>
 
     <authentication>
-        <source-password>hackme</source-password>
-        <relay-password>hackme</relay-password>
+        <source-password>SOURCE_PASSWD</source-password>
+        <relay-password>RELAY_PASSWD</relay-password>
         <admin-user>admin</admin-user>
-        <admin-password>hackme</admin-password>
+        <admin-password>ADMIN_PASSWD</admin-password>
     </authentication>
 
     <!-- set the mountpoint for a shoutcast source to use, the default if not

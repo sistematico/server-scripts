@@ -64,10 +64,10 @@ printf "\n"
 
 
 nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
-icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/systemd/system/icecast-kh.service)"
+icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/systemd/system/icecast.service)"
 liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
 cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/icecast/icecast.xml"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/icecast2/icecast.xml"
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
 youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
