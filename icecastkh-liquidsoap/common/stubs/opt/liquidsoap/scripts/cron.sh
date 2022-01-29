@@ -2,7 +2,7 @@
 
 if [ $1 ]; then
     playlist="/opt/liquidsoap/playlist/${1}.m3u"
-    music="/opt/liquidsoap/music"
+    music="/opt/liquidsoap/music/${1}"
     
     [ ! -f $playlist ] && find $music -type f -iname "*.mp3" > $playlist
 

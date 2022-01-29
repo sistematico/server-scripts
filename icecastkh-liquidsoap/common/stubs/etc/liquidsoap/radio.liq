@@ -3,23 +3,26 @@
 # Log 
 settings.log.file.path.set("/var/log/liquidsoap.log")
 settings.log.stdout.set(true)
-#set("log.file.path","/var/log/liquidsoap.log")
-#set("log.stdout",true)
 
 # Input addr
 #set("harbor.bind_addr","0.0.0.0")
 
 # Music
-playlist = playlist("~/playlist/main.m3u")
+main = playlist("~/playlist/main.m3u")
+eletronica = playlist("~/playlist/eletronica.m3u")
 
 # If something goes wrong, we'll play this
 emergency = single("~/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3")
 
 # A live source
-live = input.harbor("live",port=8080,password="hackme")
+live = input.harbor(
+  "live",
+  port = 8080,
+  password = "hackme"
+)
 
 # Create streams
-radio = fallback(track_sensitive=false, [live,playlist,emergency])
+# radio = fallback(track_sensitive=false, [live,main,emergency])
 
 # Stream it out
 output.icecast(%STREAM_FORMAT,
@@ -30,5 +33,16 @@ output.icecast(%STREAM_FORMAT,
   name = "STREAM_NAME",
   description = "STREAM_DESCRIPTION",
   genre = "STREAM_GENRE",
-  mount = "stream",
-  radio)
+  mount = "stream.STREAM_FORMAT",
+  fallback(track_sensitive=false, [live,main,emergency]))
+
+output.icecast(%STREAM_FORMAT,
+  host = "localhost", 
+  port = 8001,
+  user = "source",
+  password = "SOURCE_PASSWD",
+  name = "STREAM_NAME - Eletronica",
+  description = "STREAM_DESCRIPTION",
+  genre = "Eletronica",
+  mount = "stream.STREAM_FORMAT",
+  fallback(track_sensitive=false, [live,eletronica,emergency]))

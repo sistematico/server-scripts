@@ -34,6 +34,10 @@
     </listen-socket>
 
     <listen-socket>
+        <port>8001</port>
+    </listen-socket>
+
+    <listen-socket>
         <port>8443</port>
         <ssl>1</ssl>
     </listen-socket>

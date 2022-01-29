@@ -92,6 +92,7 @@ opam update -y 1> /dev/null 2> /dev/null
 opam upgrade -y 1> /dev/null 2> /dev/null
 
 printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
+systemctl is-active --quiet iptables && systemctl --now disable iptables
 systemctl is-active --quiet liquidsoap && systemctl --now disable liquidsoap
 systemctl is-active --quiet icecast && systemctl --now disable icecast
 systemctl is-active --quiet icecast-kh && systemctl --now disable icecast-kh
@@ -182,31 +183,35 @@ printf "$icecast_service_tpl" > /etc/systemd/system/icecast-kh.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
 curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast-kh.xml
-curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|" -e "s|STREAM_NAME|$STREAM_NAME|" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|" -e "s|STREAM_GENRE|$STREAM_GENRE|" > /etc/liquidsoap/radio.liq
+curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|g" -e "s|STREAM_NAME|$STREAM_NAME|g" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|g" -e "s|STREAM_GENRE|$STREAM_GENRE|g" > /etc/liquidsoap/radio.liq
 
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
 printf "${PURPLE}*${NC} Downloading samples...\n"
-[ ! -f '/opt/liquidsoap/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' ] && \ 
-    curl -sLo '/opt/liquidsoap/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
+[ ! -f '/opt/liquidsoap/music/main/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/main/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
 
-[ ! -f '/opt/liquidsoap/music/DubDogz - Baila Conmigo.mp3' ] && \ 
-    curl -sLo '/opt/liquidsoap/music/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
+[ ! -f '/opt/liquidsoap/music/main/DubDogz - Baila Conmigo.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/main/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
 
-[ ! -f '/opt/liquidsoap/music/Lil Peep & XXXTENTACION - Falling Down.mp3' ] && \ 
-    curl -sLo '/opt/liquidsoap/music/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
+[ ! -f '/opt/liquidsoap/music/main/Lil Peep & XXXTENTACION - Falling Down.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/main/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
 
-[ ! -f '/opt/liquidsoap/music/Lykke Li - I Follow Rivers.mp3' ] && \ 
-    curl -sLo '/opt/liquidsoap/music/Lykke Li - I Follow Rivers.mp3' 'https://drive.google.com/uc?export=download&id=186I-JL5ncUdg6TC8ootbeDJ12jHEJHFj'
+[ ! -f '/opt/liquidsoap/music/eletronica/Lykke Li - I Follow Rivers.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/eletronica/Lykke Li - I Follow Rivers.mp3' 'https://drive.google.com/uc?export=download&id=186I-JL5ncUdg6TC8ootbeDJ12jHEJHFj'
 
-[ ! -f '/opt/liquidsoap/music/Rag n Bone Man - Giant.mp3' ] && \ 
-    curl -sLo '/opt/liquidsoap/music/Rag n Bone Man - Giant.mp3' 'https://drive.google.com/uc?export=download&id=1AT8vukswiyQoiEDd4xlq9tCxE4ejpk39'
+[ ! -f '/opt/liquidsoap/music/eletronica/Rag n Bone Man - Giant.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/eletronica/Rag n Bone Man - Giant.mp3' 'https://drive.google.com/uc?export=download&id=1AT8vukswiyQoiEDd4xlq9tCxE4ejpk39'
 
-[ ! -f '/opt/liquidsoap/music/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' ] && \ 
-    curl -sLo '/opt/liquidsoap/music/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
+[ ! -f '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
 
-if ! grep --quiet liquidsoap /etc/crontab; then
+if ! grep --quiet 'cron.sh main' /etc/crontab; then
     echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh main 2>&1' >> /etc/crontab
+fi
+
+if ! grep --quiet 'cron.sh eletronica' /etc/crontab; then
+    echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh eletronica 2>&1' >> /etc/crontab
 fi
 
 [ ! -d /usr/share/liquidsoap/1.4.1 ] && mkdir /usr/share/liquidsoap/1.4.1
