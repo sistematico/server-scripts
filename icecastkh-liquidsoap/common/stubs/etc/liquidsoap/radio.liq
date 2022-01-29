@@ -33,7 +33,7 @@ output.icecast(%STREAM_FORMAT,
   name = "STREAM_NAME",
   description = "STREAM_DESCRIPTION",
   genre = "STREAM_GENRE",
-  mount = "stream.STREAM_FORMAT",
+  mount = "main.STREAM_EXT",
   fallback(track_sensitive=false, [live,main,emergency]))
 
 output.icecast(%STREAM_FORMAT,
@@ -44,5 +44,5 @@ output.icecast(%STREAM_FORMAT,
   name = "STREAM_NAME - Eletronica",
   description = "STREAM_DESCRIPTION",
   genre = "Eletronica",
-  mount = "stream.STREAM_FORMAT",
+  mount = "eletronica.STREAM_EXT",
   fallback(track_sensitive=false, [live,eletronica,emergency]))

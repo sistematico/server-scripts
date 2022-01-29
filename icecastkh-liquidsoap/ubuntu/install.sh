@@ -182,8 +182,10 @@ printf "${PURPLE}*${NC} Creating systemd units...\n"
 printf "$icecast_service_tpl" > /etc/systemd/system/icecast-kh.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
+[ "$STREAM_FORMAT" == "vorbis" ] && STREAM_EXT="ogg" || STREAM_EXT="mp3"
+
 curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast-kh.xml
-curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|g" -e "s|STREAM_NAME|$STREAM_NAME|g" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|g" -e "s|STREAM_GENRE|$STREAM_GENRE|g" > /etc/liquidsoap/radio.liq
+curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|g" -e "s|STREAM_EXT|$STREAM_EXT|g" -e "s|STREAM_NAME|$STREAM_NAME|g" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|g" -e "s|STREAM_GENRE|$STREAM_GENRE|g" > /etc/liquidsoap/radio.liq
 
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
