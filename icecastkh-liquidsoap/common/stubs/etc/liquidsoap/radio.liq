@@ -1,11 +1,13 @@
 #!/usr/bin/liquidsoap
 
 # Log 
-set("log.file.path","/var/log/liquidsoap.log")
-set("log.stdout",true)
+settings.log.file.path.set("/var/log/liquidsoap.log")
+settings.log.stdout.set(true)
+#set("log.file.path","/var/log/liquidsoap.log")
+#set("log.stdout",true)
 
 # Input addr
-set("harbor.bind_addr","0.0.0.0")
+#set("harbor.bind_addr","0.0.0.0")
 
 # Music
 playlist = playlist("~/playlist/main.m3u")
