@@ -116,7 +116,7 @@ else
     usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" liquidsoap
 fi
 
-mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts,music} 2> /dev/null
+mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{main,eletronica} 2> /dev/null
 
 printf "${PURPLE}*${NC} Installing icecast-kh from sources...\n"
 if ! command -v icecast &> /dev/null
@@ -218,6 +218,7 @@ fi
 
 printf "${PURPLE}*${NC} Running first cron job(playlists)...\n"
 /bin/bash /opt/liquidsoap/scripts/cron.sh main
+/bin/bash /opt/liquidsoap/scripts/cron.sh eletronica
 
 touch /var/log/icecast.log /var/log/liquidsoap.log
 
