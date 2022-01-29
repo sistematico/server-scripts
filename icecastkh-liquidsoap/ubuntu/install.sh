@@ -78,7 +78,7 @@ apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
 printf "${PURPLE}*${NC} Installing required dependencies...\n"
-apt install -y -q build-essential pkg-config opam \
+apt install -y -q build-essential pkg-config opam \ 
                 libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev \ 
                 libvorbis-dev libmp3lame-dev libmad0-dev libtheora-dev \ 
                 libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl \ 
