@@ -41,12 +41,12 @@
     <fileserve>1</fileserve>
 
     <paths>
-        <basedir>/usr/local/share/icecast</basedir>
-        <logdir>/usr/local/share/icecast/logs</logdir>
-        <webroot>/usr/local/share/icecast/web</webroot>
-        <adminroot>/usr/local/share/icecast/admin</adminroot>
+        <basedir>/usr/share/icecast</basedir>
+        <logdir>/usr/share/icecast/logs</logdir>
+        <webroot>/usr/share/icecast/web</webroot>
+        <adminroot>/usr/share/icecast/admin</adminroot>
         <pidfile>/var/run/icecast.pid</pidfile>
-        <ssl_certificate>/usr/local/share/icecast/icecast.pem</ssl_certificate>
+        <ssl_certificate>/usr/share/icecast/icecast.pem</ssl_certificate>
         <alias source="/" dest="/status.xsl"/>
     </paths>
 

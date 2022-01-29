@@ -92,13 +92,13 @@ EOL
 chmod 600 /etc/cloudflare.ini
 
 if [ ! -f /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem ] && [ ! -f /etc/letsencrypt/live/${STREAM_URL}/privkey.pem ]; then
-    certbot certonly -n -m "${CLOUDFLARE_EMAIL}" --agree-tos --dns-cloudflare --dns-cloudflare-credentials /etc/cloudflare.ini --webroot-path="/usr/local/share/icecast/web" -d "${STREAM_URL}"
+    certbot certonly -n -m "${CLOUDFLARE_EMAIL}" --agree-tos --dns-cloudflare --dns-cloudflare-credentials /etc/cloudflare.ini --webroot-path="/usr/share/icecast/web" -d "${STREAM_URL}"
 fi
 
 if [ -f /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem ] && [ -f /etc/letsencrypt/live/${STREAM_URL}/privkey.pem ]; then
-    cat /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem /etc/letsencrypt/live/${STREAM_URL}/privkey.pem > /usr/local/share/icecast/icecast.pem
+    cat /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem /etc/letsencrypt/live/${STREAM_URL}/privkey.pem > /usr/share/icecast/icecast.pem
     
-    chmod 600 /usr/local/share/icecast/icecast.pem
+    chmod 600 /usr/share/icecast/icecast.pem
 else
     echo "Error in certificates generation. Check your STREAM_URL in .env file."
     exit 1
@@ -145,7 +145,7 @@ fi
 
 touch /var/log/icecast.log /var/log/liquidsoap.log
 
-chown -R icecast:icecast /var/log/icecast /usr/local/share/icecast /etc/icecast /var/log/icecast.log
+chown -R icecast:icecast /var/log/icecast /usr/share/icecast /etc/icecast /var/log/icecast.log
 chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log
 
 [ ! -d /usr/share/liquidsoap/libs ] && mkdir -p /usr/share/liquidsoap/libs

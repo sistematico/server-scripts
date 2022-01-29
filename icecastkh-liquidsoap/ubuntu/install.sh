@@ -38,11 +38,11 @@ apt upgrade -y -q &> /dev/null
 
 apt install -y -q build-essential pkg-config opam libpcre3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libtheora-dev libssl-dev openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
 
-opam init -qy &> /dev/null
+opam init -qy 1> /dev/null
 eval $(opam env)
-opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile -qy 
-opam update -qy 
-opam upgrade -qy 
+opam install sedlex pcre menhir menhirLib dtools duppy mm ssl camomile -y 1> /dev/null
+opam update -y 1> /dev/null
+opam upgrade -y 1> /dev/null
 
 systemctl is-active --quiet liquidsoap && systemctl stop liquidsoap
 systemctl is-active --quiet icecast && systemctl stop icecast
