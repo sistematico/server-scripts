@@ -1,20 +1,44 @@
 <icecast>
+    <!-- location and admin are two arbitrary strings that are e.g. visible
+         on the server info page of the icecast web interface
+         (server_version.xsl). -->
     <location>Earth</location>
     <admin>icemaster@localhost</admin>
+
+    <!-- IMPORTANT!
+         Especially for inexperienced users:
+         Start out by ONLY changing all passwords and restarting Icecast.
+         For detailed setup instructions please refer to the documentation.
+         It's also available here: http://icecast.org/docs/
+    -->
+
     <limits>
         <clients>100</clients>
-        <sources>3</sources>
+        <sources>2</sources>
         <queue-size>524288</queue-size>
         <client-timeout>30</client-timeout>
         <header-timeout>15</header-timeout>
         <source-timeout>10</source-timeout>
+        <!-- If enabled, this will provide a burst of data when a client 
+             first connects, thereby significantly reducing the startup 
+             time for listeners that do substantial buffering. However,
+             it also significantly increases latency between the source
+             client and listening client.  For low-latency setups, you
+             might want to disable this. -->
         <burst-on-connect>1</burst-on-connect>
+        <!-- same as burst-on-connect, but this allows for being more
+             specific on how much to burst. Most people won't need to
+             change from the default 64k. Applies to all mountpoints  -->
         <burst-size>65535</burst-size>
     </limits>
 
     <authentication>
+        <!-- Sources log in with username 'source' -->
         <source-password>hackme</source-password>
+        <!-- Relays log in with username 'relay' -->
         <relay-password>hackme</relay-password>
+
+        <!-- Admin logs in with the username given below -->
         <admin-user>admin</admin-user>
         <admin-password>hackme</admin-password>
     </authentication>
@@ -39,23 +63,33 @@
     -->
     <hostname>localhost</hostname>
 
+    <!-- You may have multiple <listen-socket> elements -->
     <listen-socket>
         <port>8000</port>
         <!-- <bind-address>127.0.0.1</bind-address> -->
-        <shoutcast-mount>/main</shoutcast-mount>
+        <!-- <shoutcast-mount>/stream</shoutcast-mount> -->
     </listen-socket>
-
+    <!--
     <listen-socket>
-        <port>8001</port>
-        <!-- <bind-address>127.0.0.1</bind-address> -->
-        <shoutcast-mount>/eletronica</shoutcast-mount>
+        <port>8080</port>
     </listen-socket>
-
+    -->
+    <!--
     <listen-socket>
         <port>8443</port>
         <ssl>1</ssl>
     </listen-socket>
+    -->
 
+
+    <!-- Global header settings 
+         Headers defined here will be returned for every HTTP request to Icecast.
+
+         The ACAO header makes Icecast public content/API by default
+         This will make streams easier embeddable (some HTML5 functionality needs it).
+         Also it allows direct access to e.g. /status-json.xsl from other sites.
+         If you don't want this, comment out the following line or read up on CORS. 
+    -->
     <http-headers>
         <header name="Access-Control-Allow-Origin" value="*" />
     </http-headers>
@@ -164,7 +198,7 @@
         <logdir>/var/log/icecast2</logdir>
         <webroot>/usr/share/icecast2/web</webroot>
         <adminroot>/usr/share/icecast2/admin</adminroot>
-        <pidfile>/usr/share/icecast2/icecast.pid</pidfile>
+        <!-- <pidfile>/usr/share/icecast2/icecast.pid</pidfile> -->
 
         <!-- Aliases: treat requests for 'source' path as being for 'dest' path
              May be made specific to a port or bound address using the "port"
@@ -178,7 +212,10 @@
              the status page
         -->
         <alias source="/" destination="/status.xsl"/>
+        <!-- The certificate file needs to contain both public and private part.
+             Both should be PEM encoded.
         <ssl-certificate>/usr/share/icecast2/icecast.pem</ssl-certificate>
+        -->
     </paths>
 
     <logging>

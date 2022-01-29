@@ -67,7 +67,7 @@ nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scr
 icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/icecast-kh.service)"
 liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
 cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast/icecast-kh.xml"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast/icecast.xml"
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
 youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
@@ -124,7 +124,7 @@ else
     usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" liquidsoap
 fi
 
-mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{main,eletronica} 2> /dev/null
+mkdir -p /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{main,eletronica} 2> /dev/null
 
 printf "${PURPLE}*${NC} Creating certs...\n"
 cat >/etc/cloudflare.ini <<-EOL
@@ -135,13 +135,13 @@ EOL
 chmod 600 /etc/cloudflare.ini
 
 if [ ! -f /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem ] && [ ! -f /etc/letsencrypt/live/${STREAM_URL}/privkey.pem ]; then
-    certbot certonly -n -m "${CLOUDFLARE_EMAIL}" --agree-tos --dns-cloudflare --dns-cloudflare-credentials /etc/cloudflare.ini --webroot-path="/usr/share/icecast/web" -d "${STREAM_URL}"
+    certbot certonly -n -m "${CLOUDFLARE_EMAIL}" --agree-tos --dns-cloudflare --dns-cloudflare-credentials /etc/cloudflare.ini --webroot-path="/usr/share/icecast2/web" -d "${STREAM_URL}"
 fi
 
 if [ -f /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem ] && [ -f /etc/letsencrypt/live/${STREAM_URL}/privkey.pem ]; then
-    cat /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem /etc/letsencrypt/live/${STREAM_URL}/privkey.pem > /usr/share/icecast/icecast.pem
+    cat /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem /etc/letsencrypt/live/${STREAM_URL}/privkey.pem > /usr/share/icecast2/icecast.pem
     
-    chmod 600 /usr/share/icecast/icecast.pem
+    chmod 600 /usr/share/icecast2/icecast.pem
 else
     echo "Error in certificates generation. Check your STREAM_URL in .env file."
     exit 1
@@ -170,7 +170,7 @@ printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
 [ "$STREAM_FORMAT" == "vorbis" ] && STREAM_EXT="ogg" || STREAM_EXT="mp3"
 
-curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast/icecast.xml
+curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast2/icecast.xml
 curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|g" -e "s|STREAM_EXT|$STREAM_EXT|g" -e "s|STREAM_NAME|$STREAM_NAME|g" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|g" -e "s|STREAM_GENRE|$STREAM_GENRE|g" > /etc/liquidsoap/radio.liq
 
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
@@ -208,10 +208,10 @@ printf "${PURPLE}*${NC} Running first cron job(playlists)...\n"
 /bin/bash /opt/liquidsoap/scripts/cron.sh main
 /bin/bash /opt/liquidsoap/scripts/cron.sh eletronica
 
-touch /var/log/icecast.log /var/log/liquidsoap.log
+touch /var/log/liquidsoap.log
 
 printf "${PURPLE}*${NC} Fixing permissions...\n"
-chown -R icecast:icecast /var/log/icecast /usr/share/icecast /etc/icecast /var/log/icecast.log
+chown -R icecast:icecast /var/log/icecast2 /usr/share/icecast2 /etc/icecast2
 chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log
 
 [ ! -d /usr/share/liquidsoap/libs ] && mkdir -p /usr/share/liquidsoap/libs
