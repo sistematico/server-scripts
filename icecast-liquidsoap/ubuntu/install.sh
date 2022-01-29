@@ -25,13 +25,13 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
-icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/icecast-kh.service)"
-liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
-cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast2/icecast-kh.xml"
-radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
-youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
+nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
+icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/systemd/system/icecast.service)"
+liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
+cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/icecast/icecast.xml"
+radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
+youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
@@ -67,7 +67,7 @@ fi
 
 mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts,music} 2> /dev/null
 
-# Icecast KH Build
+# Icecast2 Build
 if ! command -v icecast &> /dev/null
 then
     curl -sL https://gitlab.xiph.org/xiph/icecast-server/-/archive/v${ICECAST_VERSION}/icecast-server-v${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz

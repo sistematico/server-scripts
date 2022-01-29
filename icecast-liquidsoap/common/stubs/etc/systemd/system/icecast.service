@@ -1,12 +1,12 @@
 [Unit]
-Description=Icecast-KH daemon
-Documentation=https://github.com/karlheyes/icecast-kh
+Description=Icecast2 daemon
+Documentation=https://gitlab.xiph.org/xiph/icecast-server
 
 [Service]
 Type=simple
 Restart=always
 User=icecast
-ExecStart=/usr/local/bin/icecast -b -c /etc/icecast/icecast.xml
+ExecStart=/usr/bin/icecast -b -c /etc/icecast/icecast.xml
 PIDFile=/run/icecast.pid
 KillMode=process
 RemainAfterExit=yes

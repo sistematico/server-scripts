@@ -1,4 +1,4 @@
-# Icecast KH + LiquidSoap (Ubuntu 20.04)
+# Icecast2 + LiquidSoap (Ubuntu 20.04)
 
 ## Usage
 
@@ -31,5 +31,5 @@ STREAM_FORMAT="vorbis" # mp3 or vorbis (default: vorbis)
 And run:
 
 ```bash
-curl -sNL https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/ubuntu/install.sh | bash
+curl -sNL https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/ubuntu/install.sh | bash
 ```
