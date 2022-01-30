@@ -30,7 +30,7 @@
 
     <listen-socket>
         <port>8000</port>
-        <shoutcast-mount>/varios</shoutcast-mount>
+        <shoutcast-mount>/principal</shoutcast-mount>
     </listen-socket>
 
     <listen-socket>

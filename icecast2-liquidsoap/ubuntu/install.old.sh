@@ -41,12 +41,19 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 
 printf "${PURPLE}************************************************\n"
-printf "${GREEN} ___                       _             _     _             _     _ ____                       \n"
-printf "${GREEN}|_ _|___ ___  ___ __ _ ___| |_     _    | |   (_) __ _ _   _(_) __| / ___|  ___   __ _ _ __     \n"
-printf "${GREEN} | |/ __/ _ \/ __/ _\` / __| __|  _| |_ | |   | |/ _\` | | | | |/ _\` \___ \ / _ \ / _\` | '_   \n"
-printf "${GREEN} | | (_|  __/ (_| (_| \__ \ |_  |_   _| | |___| | (_| | |_| | | (_| |___) | (_) | (_| | |_) |   \n"
-printf "${GREEN}|___\___\___|\___\__,_|___/\__|   |_|   |_____|_|\__, |\__,_|_|\__,_|____/ \___/ \__,_| .__/    \n"
-printf "${GREEN}                                                    |_|                               |_|       \n"
+printf "${GREEN} ___                       _           \n"
+printf "${GREEN}|_ _|___ ___  ___ __ _ ___| |_     _   \n"
+printf "${GREEN} | |/ __/ _ \/ __/ _\` / __| __|  _| |_ \n"
+printf "${GREEN} | | (_|  __/ (_| (_| \__ \ |_  |_   _|\n"
+printf "${GREEN}|___\___\___|\___\__,_|___/\__|   |_|  \n"
+printf "\n"                                     
+printf "${RED} _     _             _     _ ____                    \n"
+printf "${RED}| |   (_) __ _ _   _(_) __| / ___|  ___   __ _ _ __  \n"
+printf "${RED}| |   | |/ _\` | | | | |/ _\` \___ \ / _ \ / _\` | '_ \ \n"
+printf "${RED}| |___| | (_| | |_| | | (_| |___) | (_) | (_| | |_) |\n"
+printf "${RED}|_____|_|\__, |\__,_|_|\__,_|____/ \___/ \__,_| .__/ \n"
+printf "${RED}            |_|                               |_|    \n"
+printf "\n"
 printf "${YELLOW} ___           _        _ _           \n"
 printf "${YELLOW}|_ _|_ __  ___| |_ __ _| | | ___ _ __ \n"
 printf "${YELLOW} | || '_ \/ __| __/ _\` | | |/ _ \ '__|\n"
@@ -55,20 +62,15 @@ printf "${YELLOW}|___|_| |_|___/\__\__,_|_|_|\___|_|   \n"
 printf "${PURPLE}************************************************${NC}\n"   
 printf "\n"
 
+
 nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
-icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/systemd/system/icecast2.service)"
+icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/systemd/system/icecast.service)"
 liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
 cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
 icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/icecast2/icecast.xml"
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
 youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
-
-printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
-systemctl --now disable iptables &> /dev/null
-systemctl --now disable liquidsoap &> /dev/null
-systemctl --now disable icecast2 &> /dev/null
-systemctl --now disable icecast &> /dev/null
-systemctl --now disable icecast-kh &> /dev/null
+packages="libvorbis-dev libtheora-dev"
 
 printf "${PURPLE}*${NC} Updating & Upgrading system...\n"
 apt update -y -q &> /dev/null
@@ -76,21 +78,14 @@ apt upgrade -y -q &> /dev/null
 
 printf "${PURPLE}*${NC} Installing required dependencies...\n"
 #apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmad0-dev libtheora-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl icecast2 liquidsoap &> /dev/null
-apt install -y -q \
-    build-essential \
-    libxml2-dev \
-    libxslt1-dev \
-    #libcurl4-openssl-dev \
-    libssl-dev \
-    libvorbis-dev \
-    #libtheora-dev \
-    certbot \
-    python3-certbot-dns-cloudflare \
-    openssl \
-    curl \
-    cron \
-    nginx \
-    youtube-dl &> /dev/null
+apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl icecast2 liquidsoap $packages &> /dev/null
+
+printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
+systemctl is-active --quiet iptables && systemctl --now disable iptables
+systemctl is-active --quiet liquidsoap && systemctl --now disable liquidsoap
+systemctl is-active --quiet icecast2 && systemctl --now disable icecast2
+systemctl is-active --quiet icecast && systemctl --now disable icecast
+systemctl is-active --quiet icecast-kh && systemctl --now disable icecast-kh
 
 printf "${PURPLE}*${NC} Creating icecast user...\n"
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_PW")
@@ -153,7 +148,7 @@ f /run/icecast.pid 0644 icecast icecast
 EOL
 
 printf "${PURPLE}*${NC} Creating systemd units...\n"
-printf "$icecast_service_tpl" > /etc/systemd/system/icecast2.service
+printf "$icecast_service_tpl" > /etc/systemd/system/icecast.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
 [ "$STREAM_FORMAT" == "vorbis" ] && STREAM_EXT="ogg" || STREAM_EXT="mp3"
@@ -181,18 +176,6 @@ printf "${PURPLE}*${NC} Downloading samples...\n"
 
 [ ! -f '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' ] && \
     curl -sLo '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
-
-[ ! -f '/opt/liquidsoap/music/rock/Pearl Jam - Alive.mp3' ] && \
-    curl -sLo '/opt/liquidsoap/music/rock/Pearl Jam - Alive.mp3' 'https://drive.google.com/uc?export=download&id=1y2UftqxcP8a4SF1KlQBgxo5v3WnLYMTd'
-
-[ ! -f '/opt/liquidsoap/music/rock/Nirvana - Lithium.mp3' ] && \
-    curl -sLo '/opt/liquidsoap/music/rock/Nirvana - Lithium.mp3' 'https://drive.google.com/uc?export=download&id=1f_xtIxDzKUQArgTB9pwgucZ1khfUjelO'
-
-
-https://drive.google.com/file/d//view?usp=sharing
-
-
-https://drive.google.com/file/d//view?usp=sharing
 
 if ! grep --quiet 'cron.sh principal' /etc/crontab; then
     echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh principal 2>&1' >> /etc/crontab

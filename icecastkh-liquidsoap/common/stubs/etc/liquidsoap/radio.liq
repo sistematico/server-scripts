@@ -8,12 +8,12 @@ settings.log.stdout.set(true)
 #set("harbor.bind_addr","0.0.0.0")
 
 # Music
-principal = mksafe(playlist("~/playlist/principal.m3u"))
-eletronica = mksafe(playlist("~/playlist/eletronica.m3u"))
-rock = mksafe(playlist("~/playlist/rock.m3u"))
+main       = mksafe(playlist(reload_mode="watch", "~/playlist/principal.m3u"))
+eletronica = mksafe(playlist(reload_mode="watch", "~/playlist/eletronica.m3u"))
+rock       = mksafe(playlist(reload_mode="watch", "~/playlist/rock.m3u"))
 
 # If something goes wrong, we'll play this
-emergency = single("~/music/Chico Rose x 71 Digits – Somebody is Watching Me.mp3")
+emergency = single("~/music/eletronica/Chico Rose x 71 Digits – Somebody is Watching Me.mp3")
 
 # A live source
 live = input.harbor("live", port = 8080, password = "hackme")

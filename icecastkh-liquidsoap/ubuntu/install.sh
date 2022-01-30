@@ -116,7 +116,7 @@ else
     usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" liquidsoap
 fi
 
-mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{main,eletronica} 2> /dev/null
+mkdir -p /var/log/icecast /etc/icecast /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{principal,eletronica,rock} 2> /dev/null
 
 printf "${PURPLE}*${NC} Installing icecast-kh from sources...\n"
 if ! command -v icecast &> /dev/null
@@ -190,14 +190,14 @@ curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FO
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
 printf "${PURPLE}*${NC} Downloading samples...\n"
-[ ! -f '/opt/liquidsoap/music/main/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' ] && \ 
-    curl -sLo '/opt/liquidsoap/music/main/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
+[ ! -f '/opt/liquidsoap/music/principal/main//Chico Rose x 71 Digits – Somebody is Watching Me.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/principal/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
 
-[ ! -f '/opt/liquidsoap/music/main/DubDogz - Baila Conmigo.mp3' ] && \ 
-    curl -sLo '/opt/liquidsoap/music/main/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
+[ ! -f '/opt/liquidsoap/music/principal/DubDogz - Baila Conmigo.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/principal/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
 
-[ ! -f '/opt/liquidsoap/music/main/Lil Peep & XXXTENTACION - Falling Down.mp3' ] && \ 
-    curl -sLo '/opt/liquidsoap/music/main/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
+[ ! -f '/opt/liquidsoap/music/principal/Lil Peep & XXXTENTACION - Falling Down.mp3' ] && \ 
+    curl -sLo '/opt/liquidsoap/music/principal/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
 
 [ ! -f '/opt/liquidsoap/music/eletronica/Lykke Li - I Follow Rivers.mp3' ] && \ 
     curl -sLo '/opt/liquidsoap/music/eletronica/Lykke Li - I Follow Rivers.mp3' 'https://drive.google.com/uc?export=download&id=186I-JL5ncUdg6TC8ootbeDJ12jHEJHFj'
