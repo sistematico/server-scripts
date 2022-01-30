@@ -34,7 +34,11 @@
     </listen-socket>
 
     <listen-socket>
-        <port>8001</port>
+        <port>8002</port>
+    </listen-socket>
+
+    <listen-socket>
+        <port>8004</port>
     </listen-socket>
 
     <listen-socket>

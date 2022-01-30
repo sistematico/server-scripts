@@ -70,7 +70,7 @@ nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scr
 icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/icecast-kh.service)"
 liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
 cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast/icecast-kh.xml"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/icecast/icecast-kh-minimal.xml"
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
 youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
