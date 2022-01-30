@@ -8,6 +8,9 @@
 # Created on: 25/01/2022 10:04:47
 # Updated on: 29/01/2022 11:44:58
 
+# https://downloads.xiph.org/releases/icecast/icecast-2.4.4.tar.gz
+ICECAST_VERSION="2.4.4"
+
 BLACK='\033[0;30m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -75,7 +78,6 @@ apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
 printf "${PURPLE}*${NC} Installing required dependencies...\n"
-#apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmad0-dev libtheora-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl icecast2 liquidsoap &> /dev/null
 apt install -y -q \
     build-essential \
     libxml2-dev \
@@ -92,7 +94,27 @@ apt install -y -q \
     nginx \
     youtube-dl &> /dev/null
 
+printf "${PURPLE}*${NC} Building icecast...\n"
+curl -sL https://downloads.xiph.org/releases/icecast/icecast-${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
+tar xzf /tmp/icecast-${ICECAST_VERSION}.tar.gz -C /tmp/
+cd /tmp/icecast-${ICECAST_VERSION}
+#./configure --prefix=/usr --with-curl-config=/usr/bin/curl-config --with-openssl
+./configure --prefix=/usr --with-openssl
+
+make
+make install
+
+printf "${PURPLE}*${NC} Building opam...\n"
+curl -sL https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-x86_64-linux > /tmp/opam-2.1.2-x86_64-linux
+install /tmp/opam-2.1.2-x86_64-linux /usr/local/bin/opam
+
+printf "${PURPLE}*${NC} Installing liquidsoap through opam...\n"
+opam switch create 4.10.0
+opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap
+opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap
+
 printf "${PURPLE}*${NC} Creating icecast user...\n"
+
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_PW")
 
 if ! id "icecast" &>/dev/null; then
@@ -102,6 +124,7 @@ else
 fi
 
 printf "${PURPLE}*${NC} Creating liquidsoap user...\n"
+
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$LIQUIDSOAP_PW")
 
 if id "liquidsoap" &>/dev/null; then
