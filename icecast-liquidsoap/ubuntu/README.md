@@ -33,3 +33,8 @@ And run:
 ```bash
 curl -sNL https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/ubuntu/install.sh | bash
 ```
+
+## Refs
+
+- [/etc/icecast2/icecast.xml](http://ix.io/3O4D)
+- [/etc/liquidsoap/radio.liq](http://ix.io/3O4E)
