@@ -1,0 +1,86 @@
+<icecast>
+    <location>Earth</location>
+    <admin>icemaster@localhost</admin>
+    <limits>
+        <clients>100</clients>
+        <sources>4</sources>
+        <queue-size>524288</queue-size>
+        <client-timeout>30</client-timeout>
+        <header-timeout>15</header-timeout>
+        <source-timeout>10</source-timeout>
+        <burst-on-connect>1</burst-on-connect>
+        <burst-size>65535</burst-size>
+    </limits>
+
+    <authentication>
+        <source-password>SOURCE_PASSWD</source-password>
+        <relay-password>RELAY_PASSWD</relay-password>
+        <admin-user>admin</admin-user>
+        <admin-password>ADMIN_PASSWD</admin-password>
+    </authentication>
+
+    <!-- <shoutcast-mount>/live.nsv</shoutcast-mount> -->
+
+    <!--<directory>
+        <yp-url-timeout>15</yp-url-timeout>
+        <yp-url>http://dir.xiph.org/cgi-bin/yp-cgi</yp-url>
+    </directory>-->
+
+    <hostname>localhost</hostname>
+
+    <listen-socket>
+        <port>8000</port>
+        <shoutcast-mount>/varios</shoutcast-mount>
+    </listen-socket>
+
+    <listen-socket>
+        <port>8002</port>
+        <shoutcast-mount>/eletronica</shoutcast-mount>
+    </listen-socket>
+
+    <listen-socket>
+        <port>8004</port>
+        <shoutcast-mount>/rock</shoutcast-mount>
+    </listen-socket>
+
+    <listen-socket>
+        <port>8443</port>
+        <ssl>1</ssl>
+    </listen-socket>
+
+    <http-headers>
+        <header name="Access-Control-Allow-Origin" value="*" />
+    </http-headers>
+
+    <fileserve>1</fileserve>
+
+    <paths>
+        <basedir>/usr/share/icecast2</basedir>
+        <logdir>/var/log/icecast2</logdir>
+        <webroot>/usr/share/icecast2/web</webroot>
+        <adminroot>/usr/share/icecast2/admin</adminroot>
+        <pidfile>/usr/share/icecast2/icecast.pid</pidfile>
+        <alias source="/" destination="/status.xsl"/>
+        <alias source="/json" destination="/status-json.xsl"/>
+        <ssl-certificate>/usr/share/icecast2/icecast.pem</ssl-certificate>
+    </paths>
+
+    <logging>
+        <accesslog>access.log</accesslog>
+        <errorlog>error.log</errorlog>
+        <!-- <playlistlog>playlist.log</playlistlog> -->
+        <loglevel>3</loglevel> <!-- 4 Debug, 3 Info, 2 Warn, 1 Error -->
+        <logsize>10000</logsize> <!-- Max size of a logfile -->
+        <!-- <logarchive>1</logarchive> -->
+    </logging>
+
+    <security>
+        <chroot>0</chroot>
+        <!--
+        <changeowner>
+            <user>nobody</user>
+            <group>nogroup</group>
+        </changeowner>
+        -->
+    </security>
+</icecast>

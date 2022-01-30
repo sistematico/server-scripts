@@ -63,20 +63,22 @@ printf "${PURPLE}************************************************${NC}\n"
 printf "\n"
 
 
-nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
-icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/systemd/system/icecast.service)"
-liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
-cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
-icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/icecast2/icecast.xml"
-radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
-youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
+nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
+icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/systemd/system/icecast.service)"
+liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
+cron_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/opt/liquidsoap/scripts/cron.sh)"
+icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/icecast2/icecast.xml"
+radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
+youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
+packages="libvorbis-dev libtheora-dev"
 
-#printf "${PURPLE}*${NC} Updating & Upgrading system...\n"
-#apt update -y -q &> /dev/null
-#apt upgrade -y -q &> /dev/null
+printf "${PURPLE}*${NC} Updating & Upgrading system...\n"
+apt update -y -q &> /dev/null
+apt upgrade -y -q &> /dev/null
 
 printf "${PURPLE}*${NC} Installing required dependencies...\n"
-apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmad0-dev libtheora-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl icecast2 liquidsoap &> /dev/null
+#apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libvorbis-dev libmad0-dev libtheora-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl icecast2 liquidsoap &> /dev/null
+apt install -y -q build-essential libxml2-dev libxslt1-dev libcurl4-openssl-dev libssl-dev cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl icecast2 liquidsoap $packages &> /dev/null
 
 printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
 systemctl is-active --quiet iptables && systemctl --now disable iptables
@@ -157,14 +159,14 @@ curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FO
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
 printf "${PURPLE}*${NC} Downloading samples...\n"
-[ ! -f '/opt/liquidsoap/music/main/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' ] && \
-    curl -sLo '/opt/liquidsoap/music/main/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
+[ ! -f '/opt/liquidsoap/music/principal/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' ] && \
+    curl -sLo '/opt/liquidsoap/music/principal/Chico Rose x 71 Digits – Somebody is Watching Me.mp3' 'https://drive.google.com/uc?export=download&id=1y0xNhh7xljd2453Q-vCZshfw7ncjJ3eW'
 
-[ ! -f '/opt/liquidsoap/music/main/DubDogz - Baila Conmigo.mp3' ] && \
-    curl -sLo '/opt/liquidsoap/music/main/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
+[ ! -f '/opt/liquidsoap/music/principal/DubDogz - Baila Conmigo.mp3' ] && \
+    curl -sLo '/opt/liquidsoap/music/principal/DubDogz - Baila Conmigo.mp3' 'https://drive.google.com/uc?export=download&id=1JeJA3LiEZdvi-Mg-UAVCxluv0oAGWvPR'
 
-[ ! -f '/opt/liquidsoap/music/main/Lil Peep & XXXTENTACION - Falling Down.mp3' ] && \
-    curl -sLo '/opt/liquidsoap/music/main/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
+[ ! -f '/opt/liquidsoap/music/principal/Lil Peep & XXXTENTACION - Falling Down.mp3' ] && \
+    curl -sLo '/opt/liquidsoap/music/principal/Lil Peep & XXXTENTACION - Falling Down.mp3' 'https://drive.google.com/uc?export=download&id=1yMjB1A6YUdXA4RkiL-eYaPVhXGG9KLdo'
 
 [ ! -f '/opt/liquidsoap/music/eletronica/Lykke Li - I Follow Rivers.mp3' ] && \
     curl -sLo '/opt/liquidsoap/music/eletronica/Lykke Li - I Follow Rivers.mp3' 'https://drive.google.com/uc?export=download&id=186I-JL5ncUdg6TC8ootbeDJ12jHEJHFj'
@@ -175,19 +177,24 @@ printf "${PURPLE}*${NC} Downloading samples...\n"
 [ ! -f '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' ] && \
     curl -sLo '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
 
-if ! grep --quiet 'cron.sh main' /etc/crontab; then
-    echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh main 2>&1' >> /etc/crontab
+if ! grep --quiet 'cron.sh principal' /etc/crontab; then
+    echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh principal 2>&1' >> /etc/crontab
 fi
 
 if ! grep --quiet 'cron.sh eletronica' /etc/crontab; then
     echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh eletronica 2>&1' >> /etc/crontab
 fi
 
+if ! grep --quiet 'cron.sh rock' /etc/crontab; then
+    echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh rock 2>&1' >> /etc/crontab
+fi
+
 [ ! -d /usr/share/liquidsoap/1.4.1 ] && mkdir /usr/share/liquidsoap/1.4.1
 
 printf "${PURPLE}*${NC} Running first cron job(playlists)...\n"
-/bin/bash /opt/liquidsoap/scripts/cron.sh main
+/bin/bash /opt/liquidsoap/scripts/cron.sh principal
 /bin/bash /opt/liquidsoap/scripts/cron.sh eletronica
+/bin/bash /opt/liquidsoap/scripts/cron.sh rock
 
 touch /var/log/liquidsoap.log
 

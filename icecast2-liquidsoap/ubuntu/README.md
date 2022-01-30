@@ -31,10 +31,15 @@ STREAM_FORMAT="vorbis" # mp3 or vorbis (default: vorbis)
 And run:
 
 ```bash
-curl -sNL https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast-liquidsoap/ubuntu/install.sh | bash
+curl -sNL https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/ubuntu/install.sh | bash
 ```
 
 ## Refs
 
 - [/etc/icecast2/icecast.xml](http://ix.io/3O4D)
 - [/etc/liquidsoap/radio.liq](http://ix.io/3O4E)
+
+## Versions
+
+- Icecast v2.4.4
+- Liquidsoap v?

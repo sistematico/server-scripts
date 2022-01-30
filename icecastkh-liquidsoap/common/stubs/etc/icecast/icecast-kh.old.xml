@@ -1,8 +1,8 @@
 <icecast>
     <limits>
         <clients>1000</clients>
-        <sources>4</sources>
-        <!-- <workers>1</workers> -->
+        <sources>10</sources>
+        <workers>1</workers>
         <!-- <queue-size>524288</queue-size> -->
         <queue-size>1008576</queue-size>
         <client-timeout>30</client-timeout>
@@ -34,11 +34,7 @@
     </listen-socket>
 
     <listen-socket>
-        <port>8002</port>
-    </listen-socket>
-
-    <listen-socket>
-        <port>8004</port>
+        <port>8001</port>
     </listen-socket>
 
     <listen-socket>

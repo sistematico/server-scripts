@@ -208,12 +208,16 @@ printf "${PURPLE}*${NC} Downloading samples...\n"
 [ ! -f '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' ] && \ 
     curl -sLo '/opt/liquidsoap/music/eletronica/Vintage Culture, Bruno Be feat Manimal - Human at Burning Man.mp3' 'https://drive.google.com/uc?export=download&id=1I4uN5yauNETAjRyqnt4sBX6JLKfYpY9c'
 
-if ! grep --quiet 'cron.sh main' /etc/crontab; then
-    echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh main 2>&1' >> /etc/crontab
+if ! grep --quiet 'cron.sh principal' /etc/crontab; then
+    echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh principal 2>&1' >> /etc/crontab
 fi
 
 if ! grep --quiet 'cron.sh eletronica' /etc/crontab; then
     echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh eletronica 2>&1' >> /etc/crontab
+fi
+
+if ! grep --quiet 'cron.sh rock' /etc/crontab; then
+    echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh rock 2>&1' >> /etc/crontab
 fi
 
 [ ! -d /usr/share/liquidsoap/1.4.1 ] && mkdir /usr/share/liquidsoap/1.4.1
