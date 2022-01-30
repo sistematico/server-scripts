@@ -46,7 +46,7 @@ export DEBIAN_FRONTEND=noninteractive
 printf "${PURPLE}************************************************\n"
 printf "${GREEN} ___                       _             _     _             _     _ ____                       \n"
 printf "${GREEN}|_ _|___ ___  ___ __ _ ___| |_     _    | |   (_) __ _ _   _(_) __| / ___|  ___   __ _ _ __     \n"
-printf "${GREEN} | |/ __/ _ \/ __/ _\` / __| __|  _| |_ | |   | |/ _\` | | | | |/ _\` \___ \ / _ \ / _\` | '_   \n"
+printf "${GREEN} | |/ __/ _ \/ __/ _\` / __| __|  _| |_  | |   | |/ _\` | | | | |/ _\` \___ \ / _ \ / _\` | '_\ \n"
 printf "${GREEN} | | (_|  __/ (_| (_| \__ \ |_  |_   _| | |___| | (_| | |_| | | (_| |___) | (_) | (_| | |_) |   \n"
 printf "${GREEN}|___\___\___|\___\__,_|___/\__|   |_|   |_____|_|\__, |\__,_|_|\__,_|____/ \___/ \__,_| .__/    \n"
 printf "${GREEN}                                                    |_|                               |_|       \n"
@@ -86,6 +86,8 @@ apt install -y -q \
     libssl-dev \
     libvorbis-dev \
     #libtheora-dev \
+    unzip \
+    bubblewrap \
     certbot \
     python3-certbot-dns-cloudflare \
     openssl \
@@ -109,9 +111,16 @@ curl -sL https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-x86_64
 install /tmp/opam-2.1.2-x86_64-linux /usr/local/bin/opam
 
 printf "${PURPLE}*${NC} Installing liquidsoap through opam...\n"
-opam switch create 4.10.0
-opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap
-opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap
+
+export OPAMROOTISOK=true
+
+opam init -qy 1> /dev/null 2> /dev/null
+eval $(opam env) 1> /dev/null 2> /dev/null
+
+opam switch create 4.10.0 1> /dev/null 2> /dev/null
+
+opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap 1> /dev/null 2> /dev/null
+opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap 1> /dev/null 2> /dev/null
 
 printf "${PURPLE}*${NC} Creating icecast user...\n"
 

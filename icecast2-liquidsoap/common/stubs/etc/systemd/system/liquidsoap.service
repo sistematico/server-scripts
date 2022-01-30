@@ -4,9 +4,9 @@ After=network.target icecast.service
 Documentation=http://liquidsoap.fm
 
 [Service]
-#Type=forking
+Type=forking
 #Type=simple
-Type=oneshot
+#Type=oneshot
 User=liquidsoap
 PIDFile=/run/liquidsoap.pid
 ExecStart=/usr/bin/liquidsoap /etc/liquidsoap/radio.liq
