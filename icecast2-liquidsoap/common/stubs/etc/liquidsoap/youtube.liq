@@ -5,7 +5,8 @@ set("log.file.path", "/var/log/liquidsoap.log")
 set("log.stdout", true)
 
 # Youtube
-dance = mksafe(playlist("youtube-pl:PLp0YhNoP_vanDpHF6dCZkgsxSiAyska8V"))
+#dance = mksafe(playlist("youtube-pl:PLp0YhNoP_vanDpHF6dCZkgsxSiAyska8V"))
+dance = playlist("youtube-pl:PLp0YhNoP_vanDpHF6dCZkgsxSiAyska8V")
 emerg = single("~/music/eletronica/Chico Rose x 71 Digits – Somebody is Watching Me.mp3")
 live = input.harbor("live",port=8080,password="hackme")
 

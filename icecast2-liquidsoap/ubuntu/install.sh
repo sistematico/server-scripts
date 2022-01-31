@@ -141,7 +141,7 @@ else
     usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "Icecast System User" liquidsoap
 fi
 
-mkdir -p /etc/icecast2 /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{principal,eletronica,rock} 2> /dev/null
+mkdir -p /var/log/icecast2 /etc/icecast2 /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{principal,eletronica,rock} 2> /dev/null
 
 if ! grep --quiet 'opam-init' /opt/liquidsoap/.bash_profile; then
     echo 'test -r /opt/liquidsoap/.opam/opam-init/init.sh && . /opt/liquidsoap/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true' >> /opt/liquidsoap/.bash_profile
@@ -297,10 +297,10 @@ printf "${BLUE}*${NC} Running first cron job(playlists)...\n"
 /bin/bash /opt/liquidsoap/scripts/cron.sh eletronica
 /bin/bash /opt/liquidsoap/scripts/cron.sh rock
 
-touch /var/log/liquidsoap.log /var/log/icecast.log
+touch /var/log/liquidsoap.log
 
 printf "${YELLOW}*${NC} Fixing permissions...\n"
-chown -R icecast:icecast /var/log/icecast2 $ICECAST_PATH /etc/icecast2 /var/log/icecast.log
+chown -R icecast:icecast /var/log/icecast2 $ICECAST_PATH /etc/icecast2
 chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log /usr/share/liquidsoap
 
 [ ! -d /usr/share/liquidsoap/libs ] && mkdir -p /usr/share/liquidsoap/libs
@@ -309,4 +309,4 @@ ln -fs /usr/share/liquidsoap/libs /usr/share/liquidsoap/1.4.1 2> /dev/null
 systemctl daemon-reload 
 printf "${BLUE}*${NC} Enabling & starting services...\n"
 systemctl enable icecast liquidsoap &> /dev/null
-systemctl restart nginx cron icecast liquidsoap
+systemctl restart nginx cron icecast2 liquidsoap
