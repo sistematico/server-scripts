@@ -32,6 +32,6 @@ snap remove snap-store 1> /dev/null 2> /dev/null
 snap remove core 1> /dev/null 2> /dev/null
 snap remove core18 1> /dev/null 2> /dev/null
 
-apt remove snapd --purge 2>&1
+apt remove snapd --purge 1> /dev/null 2> /dev/null
 
 rm -rf /snap /var/snap /var/lib/snapd /var/cache/snapd /usr/lib/snapd 2> /dev/null
