@@ -85,8 +85,8 @@ apt install -y -q \
     build-essential \
     libxml2-dev \
     libxslt1-dev \
-    #libcurl4-openssl-dev \
     libssl-dev \
+    #libcurl4-openssl-dev \
     libvorbis-dev \
     #libtheora-dev \
     unzip \
@@ -97,7 +97,19 @@ apt install -y -q \
     curl \
     cron \
     nginx \
-    youtube-dl &> /dev/null
+    youtube-dl \
+    debianutils
+    # OPAM
+    pkg-config \
+    libcurl4-gnutls-dev \
+    libmad0-dev \
+    libmp3lame-dev \
+    libogg-dev \
+    libpcre3-dev \
+    libsamplerate0-dev \
+    libtag1-dev \
+    libvorbis-dev \
+    zlib1g-dev &> /dev/null
 
 printf "${PURPLE}*${NC} Building icecast...\n"
 curl -sL https://downloads.xiph.org/releases/icecast/icecast-${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
@@ -118,9 +130,10 @@ printf "${PURPLE}*${NC} Installing liquidsoap through opam...\n"
 export OPAMROOTISOK=true
 
 opam init -qy 1> /dev/null 2> /dev/null
-eval $(opam env) 1> /dev/null 2> /dev/null
+#eval $(opam env) 1> /dev/null 2> /dev/null
 
 opam switch create 4.10.0 1> /dev/null 2> /dev/null
+eval $(opam env --switch=4.10.0) 1> /dev/null 2> /dev/null
 
 opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap 1> /dev/null 2> /dev/null
 opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap 1> /dev/null 2> /dev/null
