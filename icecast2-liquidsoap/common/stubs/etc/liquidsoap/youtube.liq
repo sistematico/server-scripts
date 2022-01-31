@@ -8,7 +8,8 @@ set("log.stdout", true)
 #dance = mksafe(playlist("youtube-pl:PLp0YhNoP_vanDpHF6dCZkgsxSiAyska8V"))
 #dance = playlist("youtube-pl:PLp0YhNoP_vanDpHF6dCZkgsxSiAyska8V")
 #"ffmpeg2wav:youtube-dl:https$(colon)//youtube.com/watch?v=-IYXYB0r-Ww"
-dance = mksafe(playlist("youtube-pl:https$(colon)//youtube.com/watch?v=-IYXYB0r-Ww"))
+#dance = mksafe(playlist("youtube-pl:https$(colon)//youtube.com/watch?v=-IYXYB0r-Ww"))
+dance = mksafe(playlist("youtube-pl:PLp0YhNoP_vanDpHF6dCZkgsxSiAyska8V"))
 emerg = single("~/music/principal/Chico Rose x 71 Digits – Somebody is Watching Me.mp3")
 live = input.harbor("live",port=8080,password="hackme")
 
