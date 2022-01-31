@@ -65,7 +65,6 @@ printf "${YELLOW}|___|_| |_|___/\__\__,_|_|_|\___|_|   \n"
 printf "${PURPLE}************************************************${NC}\n"   
 printf "\n"
 
-
 nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
 icecast_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/icecast-kh.service)"
 liquidsoap_service_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecastkh-liquidsoap/common/stubs/etc/systemd/system/liquidsoap.service)"
@@ -84,6 +83,9 @@ apt install -y -q build-essential pkg-config opam \
                 libvorbis-dev libmp3lame-dev libmad0-dev libtheora-dev libssl-dev \
                 libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev \
                 cron openssl curl certbot python3-certbot-dns-cloudflare nginx youtube-dl &> /dev/null
+
+printf "${PURPLE}*${NC} Disabling snap system...\n"
+bash <(curl -sL https://raw.githubusercontent.com/sistematico/server-scripts/main/common/snap-disable.sh)
 
 opam init -qy 1> /dev/null 2> /dev/null
 OPAMROOTISOK="y" eval $(opam env) 1> /dev/null 2> /dev/null

@@ -66,6 +66,9 @@ icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/i
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
 youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
+printf "${PURPLE}*${NC} Disabling snap system...\n"
+bash <(curl -sL https://raw.githubusercontent.com/sistematico/server-scripts/main/common/snap-disable.sh)
+
 printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
 systemctl --now disable iptables &> /dev/null
 systemctl --now disable liquidsoap &> /dev/null
