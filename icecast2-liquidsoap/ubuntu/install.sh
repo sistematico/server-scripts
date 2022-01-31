@@ -107,6 +107,11 @@ apt install -y -q \
     libsamplerate0-dev \
     libtag1-dev \
     libvorbis-dev \
+    libfaad-dev \
+    libflac-dev \
+    libgstreamer-plugins-base1.0-dev \
+    libgstreamer1.0-dev \
+    libopus-dev \
     zlib1g-dev &> /dev/null
 
 printf "${BLUE}*${NC} Building icecast...\n"
@@ -163,10 +168,10 @@ install /tmp/opam-2.1.2-x86_64-linux /usr/local/bin/opam
     sudo -H -u liquidsoap bash -c 'eval $(opam env --switch=4.10.0) 1> /dev/null 2> /dev/null'
 
     #opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
-    sudo -H -u liquidsoap bash -c 'opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
+    sudo -H -u liquidsoap bash -c 'opam depext taglib mad faad flac gstreamer lame opus vorbis cry ssl samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
 
     #opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
-    sudo -H -u liquidsoap bash -c 'opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
+    sudo -H -u liquidsoap bash -c 'opam install taglib mad faad flac gstreamer lame opus vorbis cry ssl samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
 
 # else
 #     printf "${YELLOW}*${NC} Liquidsoap already installed...\n"
