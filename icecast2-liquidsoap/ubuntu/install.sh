@@ -114,9 +114,9 @@ curl -sL https://downloads.xiph.org/releases/icecast/icecast-${ICECAST_VERSION}.
 tar xzf /tmp/icecast-${ICECAST_VERSION}.tar.gz -C /tmp/
 cd /tmp/icecast-${ICECAST_VERSION}
 #./configure --prefix=/usr --with-curl-config=/usr/bin/curl-config --with-openssl
-./configure --prefix=/usr --with-openssl 2>&1
-make 2>&1
-make install 2>&1
+./configure --prefix=/usr --with-openssl 1> /dev/null 2> /dev/null
+make 1> /dev/null 2> /dev/null
+make install 1> /dev/null 2> /dev/null
 
 printf "${BLUE}*${NC} Building opam...\n"
 curl -sL https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-x86_64-linux > /tmp/opam-2.1.2-x86_64-linux
