@@ -98,8 +98,8 @@ apt install -y -q \
     cron \
     nginx \
     youtube-dl \
-    debianutils
     # OPAM
+    debianutils \
     pkg-config \
     libcurl4-gnutls-dev \
     libmad0-dev \
