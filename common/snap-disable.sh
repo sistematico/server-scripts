@@ -21,16 +21,16 @@ systemctl --now disable \
     snapd.snap-repair.service \
     snapd.system-shutdown.service \
     snapd.socket \
-    snapd.snap-repair.timer 2> /dev/null
+    snapd.snap-repair.timer 1> /dev/null 2> /dev/null
 
-umount /snap/core* -lf 2> /dev/null
+umount /snap/core* -lf 1> /dev/null 2> /dev/null
 
-snap remove gnome-3-34-1804 2> /dev/null
-snap remove gtk-common-themes 2> /dev/null
-snap remove snapd 2> /dev/null
-snap remove snap-store 2> /dev/null
-snap remove core 2> /dev/null
-snap remove core18 2> /dev/null
+snap remove gnome-3-34-1804 1> /dev/null 2> /dev/null
+snap remove gtk-common-themes 1> /dev/null 2> /dev/null
+snap remove snapd 1> /dev/null 2> /dev/null
+snap remove snap-store 1> /dev/null 2> /dev/null
+snap remove core 1> /dev/null 2> /dev/null
+snap remove core18 1> /dev/null 2> /dev/null
 
 apt remove snapd --purge 2>&1
 
