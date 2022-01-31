@@ -23,7 +23,7 @@ snapd.system-shutdown.service \
 snapd.socket \ 
 snapd.snap-repair.timer 2> /dev/null
 
-umount /snap/core* -lf
+umount /snap/core* -lf 2> /dev/null
 
 snap remove gnome-3-34-1804 2> /dev/null
 snap remove gtk-common-themes 2> /dev/null
@@ -32,6 +32,6 @@ snap remove snap-store 2> /dev/null
 snap remove core 2> /dev/null
 snap remove core18 2> /dev/null
 
-apt remove snapd --purge
+apt remove snapd --purge 2>&1
 
-rm -rf /snap /var/snap /var/lib/snapd /var/cache/snapd /usr/lib/snapd
+rm -rf /snap /var/snap /var/lib/snapd /var/cache/snapd /usr/lib/snapd 2>&1
