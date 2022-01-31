@@ -46,7 +46,7 @@ export DEBIAN_FRONTEND=noninteractive
 printf "${PURPLE}************************************************\n"
 printf "${GREEN} ___                       _             _     _             _     _ ____                       \n"
 printf "${GREEN}|_ _|___ ___  ___ __ _ ___| |_     _    | |   (_) __ _ _   _(_) __| / ___|  ___   __ _ _ __     \n"
-printf "${GREEN} | |/ __/ _ \/ __/ _\` / __| __|  _| |_  | |   | |/ _\` | | | | |/ _\` \___ \ / _ \ / _\` | '_\ \n"
+printf "${GREEN} | |/ __/ _ \/ __/ _\` / __| __|  _| |_  | |   | |/ _\` | | | | |/ _\` \___ \ / _ \ / _\` | '_ \ \n"
 printf "${GREEN} | | (_|  __/ (_| (_| \__ \ |_  |_   _| | |___| | (_| | |_| | | (_| |___) | (_) | (_| | |_) |   \n"
 printf "${GREEN}|___\___\___|\___\__,_|___/\__|   |_|   |_____|_|\__, |\__,_|_|\__,_|____/ \___/ \__,_| .__/    \n"
 printf "${GREEN}                                                    |_|                               |_|       \n"
@@ -86,9 +86,7 @@ apt install -y -q \
     libxml2-dev \
     libxslt1-dev \
     libssl-dev \
-    #libcurl4-openssl-dev \
     libvorbis-dev \
-    #libtheora-dev \
     unzip \
     bubblewrap \
     certbot \
@@ -98,7 +96,6 @@ apt install -y -q \
     cron \
     nginx \
     youtube-dl \
-    # OPAM
     debianutils \
     pkg-config \
     libcurl4-gnutls-dev \
@@ -116,10 +113,9 @@ curl -sL https://downloads.xiph.org/releases/icecast/icecast-${ICECAST_VERSION}.
 tar xzf /tmp/icecast-${ICECAST_VERSION}.tar.gz -C /tmp/
 cd /tmp/icecast-${ICECAST_VERSION}
 #./configure --prefix=/usr --with-curl-config=/usr/bin/curl-config --with-openssl
-./configure --prefix=/usr --with-openssl
-
-make
-make install
+./configure --prefix=/usr --with-openssl 2>&1
+make 2>&1
+make install 2>&1
 
 printf "${PURPLE}*${NC} Building opam...\n"
 curl -sL https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-x86_64-linux > /tmp/opam-2.1.2-x86_64-linux
