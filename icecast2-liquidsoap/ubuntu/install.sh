@@ -192,11 +192,11 @@ cat >/etc/tmpfiles.d/liquidsoap.conf <<EOL
 f /run/liquidsoap.pid 0644 liquidsoap liquidsoap
 EOL
 
-
-
 cat >/etc/tmpfiles.d/icecast.conf <<EOL
-f /run/icecast.pid 0644 icecast icecast
+f /run/icecast2.pid 0644 icecast icecast
 EOL
+
+systemd-tmpfiles --create --remove # --boot
 
 printf "${PURPLE}*${NC} Creating systemd units...\n"
 printf "$icecast_service_tpl" > /etc/systemd/system/icecast2.service
@@ -205,7 +205,21 @@ printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 [ "$STREAM_FORMAT" == "vorbis" ] && STREAM_EXT="ogg" || STREAM_EXT="mp3"
 
 curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast2/icecast.xml
-curl -sL "$radio_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|STREAM_FORMAT|$STREAM_FORMAT|g" -e "s|STREAM_EXT|$STREAM_EXT|g" -e "s|STREAM_NAME|$STREAM_NAME|g" -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|g" -e "s|STREAM_GENRE|$STREAM_GENRE|g" > /etc/liquidsoap/radio.liq
+curl -sL "$radio_tpl" | \
+    sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" \
+    -e "s|STREAM_FORMAT|$STREAM_FORMAT|g" \
+    -e "s|STREAM_EXT|$STREAM_EXT|g" \
+    -e "s|STREAM_NAME|$STREAM_NAME|g" \
+    -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|g" \
+    -e "s|STREAM_GENRE|$STREAM_GENRE|g" > /etc/liquidsoap/radio.liq
+
+curl -sL "$youtube_tpl" | \
+    sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" \
+    -e "s|STREAM_FORMAT|$STREAM_FORMAT|g" \
+    -e "s|STREAM_EXT|$STREAM_EXT|g" \
+    -e "s|STREAM_NAME|$STREAM_NAME|g" \
+    -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|g" \
+    -e "s|STREAM_GENRE|$STREAM_GENRE|g" > /etc/liquidsoap/youtube.liq
 
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
@@ -233,12 +247,6 @@ printf "${PURPLE}*${NC} Downloading samples...\n"
 
 [ ! -f '/opt/liquidsoap/music/rock/Nirvana - Lithium.mp3' ] && \
     curl -sLo '/opt/liquidsoap/music/rock/Nirvana - Lithium.mp3' 'https://drive.google.com/uc?export=download&id=1f_xtIxDzKUQArgTB9pwgucZ1khfUjelO'
-
-
-https://drive.google.com/file/d//view?usp=sharing
-
-
-https://drive.google.com/file/d//view?usp=sharing
 
 if ! grep --quiet 'cron.sh principal' /etc/crontab; then
     echo '*/2 * * * * liquidsoap /bin/bash /opt/liquidsoap/scripts/cron.sh principal 2>&1' >> /etc/crontab
