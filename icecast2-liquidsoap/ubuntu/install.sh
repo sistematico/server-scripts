@@ -84,6 +84,8 @@ apt upgrade -y -q 1> /dev/null 2> /dev/null
 printf "${GREEN}*${NC} Installing required dependencies...\n"
 apt install -y -q \
     build-essential \
+    ffmpeg \
+    python python3 \
     libxml2-dev \
     libxslt1-dev \
     libssl-dev \
@@ -168,10 +170,10 @@ install /tmp/opam-2.1.2-x86_64-linux /usr/local/bin/opam
     sudo -H -u liquidsoap bash -c 'eval $(opam env --switch=4.10.0) 1> /dev/null 2> /dev/null'
 
     #opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
-    sudo -H -u liquidsoap bash -c 'opam depext taglib mad faad flac gstreamer lame opus vorbis cry ssl samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
+    sudo -H -u liquidsoap bash -c 'opam depext taglib mad faad flac gstreamer lame opus vorbis cry ssl samplerate ffmpeg ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
 
     #opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
-    sudo -H -u liquidsoap bash -c 'opam install taglib mad faad flac gstreamer lame opus vorbis cry ssl samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
+    sudo -H -u liquidsoap bash -c 'opam install taglib mad faad flac gstreamer lame opus vorbis cry ssl samplerate ffmpeg ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
 
 # else
 #     printf "${YELLOW}*${NC} Liquidsoap already installed...\n"
