@@ -78,8 +78,8 @@ systemctl --now disable icecast &> /dev/null
 systemctl --now disable icecast-kh &> /dev/null
 
 printf "${BLUE}*${NC} Updating & Upgrading system...\n"
-apt update -y -q &> /dev/null
-apt upgrade -y -q &> /dev/null
+apt update -y -q 1> /dev/null 2> /dev/null
+apt upgrade -y -q 1> /dev/null 2> /dev/null
 
 printf "${GREEN}*${NC} Installing required dependencies...\n"
 apt install -y -q \
@@ -132,8 +132,8 @@ opam init -qy 1> /dev/null 2> /dev/null
 opam switch create 4.10.0 1> /dev/null 2> /dev/null
 eval $(opam env --switch=4.10.0) 1> /dev/null 2> /dev/null
 
-opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap 1> /dev/null 2> /dev/null
-opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap 1> /dev/null 2> /dev/null
+opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
+opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
 
 printf "${YELLOW}*${NC} Creating icecast user...\n"
 
