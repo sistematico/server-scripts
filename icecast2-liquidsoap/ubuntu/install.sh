@@ -44,7 +44,7 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
-printf "${PURPLE}************************************************\n"
+printf "${PURPLE}***********************************************************************************************\n"
 printf "${GREEN} ___                       _             _     _             _     _ ____                       \n"
 printf "${GREEN}|_ _|___ ___  ___ __ _ ___| |_     _    | |   (_) __ _ _   _(_) __| / ___|  ___   __ _ _ __     \n"
 printf "${GREEN} | |/ __/ _ \/ __/ _\` / __| __|  _| |_  | |   | |/ _\` | | | | |/ _\` \___ \ / _ \ / _\` | '_ \ \n"
@@ -56,7 +56,7 @@ printf "${YELLOW}|_ _|_ __  ___| |_ __ _| | | ___ _ __ \n"
 printf "${YELLOW} | || '_ \/ __| __/ _\` | | |/ _ \ '__|\n"
 printf "${YELLOW} | || | | \__ \ || (_| | | |  __/ |   \n"
 printf "${YELLOW}|___|_| |_|___/\__\__,_|_|_|\___|_|   \n"
-printf "${PURPLE}************************************************${NC}\n"   
+printf "${PURPLE}***********************************************************************************************${NC}\n"
 printf "\n"
 
 nginx_tpl="$(curl -s -L https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/nginx/sites-available/nginx.conf)"
@@ -67,7 +67,7 @@ icecast_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/i
 radio_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/liquidsoap/radio.liq"
 youtube_tpl="https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/etc/liquidsoap/youtube.liq"
 
-printf "${PURPLE}*${NC} Disabling snap system...\n"
+printf "${RED}*${NC} Disabling snap system...\n"
 bash <(curl -sL https://raw.githubusercontent.com/sistematico/server-scripts/main/common/snap-disable.sh)
 
 printf "${PURPLE}*${NC} Disabling and stopping old systemd units...\n"
@@ -77,11 +77,11 @@ systemctl --now disable icecast2 &> /dev/null
 systemctl --now disable icecast &> /dev/null
 systemctl --now disable icecast-kh &> /dev/null
 
-printf "${PURPLE}*${NC} Updating & Upgrading system...\n"
+printf "${BLUE}*${NC} Updating & Upgrading system...\n"
 apt update -y -q &> /dev/null
 apt upgrade -y -q &> /dev/null
 
-printf "${PURPLE}*${NC} Installing required dependencies...\n"
+printf "${GREEN}*${NC} Installing required dependencies...\n"
 apt install -y -q \
     build-essential \
     libxml2-dev \
@@ -109,7 +109,7 @@ apt install -y -q \
     libvorbis-dev \
     zlib1g-dev &> /dev/null
 
-printf "${PURPLE}*${NC} Building icecast...\n"
+printf "${BLUE}*${NC} Building icecast...\n"
 curl -sL https://downloads.xiph.org/releases/icecast/icecast-${ICECAST_VERSION}.tar.gz > /tmp/icecast-${ICECAST_VERSION}.tar.gz
 tar xzf /tmp/icecast-${ICECAST_VERSION}.tar.gz -C /tmp/
 cd /tmp/icecast-${ICECAST_VERSION}
@@ -118,11 +118,11 @@ cd /tmp/icecast-${ICECAST_VERSION}
 make 2>&1
 make install 2>&1
 
-printf "${PURPLE}*${NC} Building opam...\n"
+printf "${BLUE}*${NC} Building opam...\n"
 curl -sL https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-x86_64-linux > /tmp/opam-2.1.2-x86_64-linux
 install /tmp/opam-2.1.2-x86_64-linux /usr/local/bin/opam
 
-printf "${PURPLE}*${NC} Installing liquidsoap through opam...\n"
+printf "${GREEN}*${NC} Installing liquidsoap through opam...\n"
 
 export OPAMROOTISOK=true
 
@@ -135,7 +135,7 @@ eval $(opam env --switch=4.10.0) 1> /dev/null 2> /dev/null
 opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap 1> /dev/null 2> /dev/null
 opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap 1> /dev/null 2> /dev/null
 
-printf "${PURPLE}*${NC} Creating icecast user...\n"
+printf "${YELLOW}*${NC} Creating icecast user...\n"
 
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_PW")
 
@@ -145,17 +145,19 @@ else
     usermod -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" icecast
 fi
 
-printf "${PURPLE}*${NC} Creating liquidsoap user...\n"
+printf "${YELLOW}*${NC} Creating liquidsoap user...\n"
 
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$LIQUIDSOAP_PW")
 
-if id "liquidsoap" &>/dev/null; then
-    usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "LiquidSoap System User" liquidsoap
+if ! id "icecast" &>/dev/null; then
+    useradd -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "Liquidsoap System User" -U liquidsoap
+else
+    usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "Icecast System User" -g liquidsoap liquidsoap
 fi
 
-mkdir -p /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{principal,eletronica,rock} 2> /dev/null
+mkdir -p /etc/icecast2 /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{principal,eletronica,rock} 2> /dev/null
 
-printf "${PURPLE}*${NC} Creating certs...\n"
+printf "${BLUE}*${NC} Creating certs...\n"
 if [ ! -f /etc/cloudflare.ini ]; then
 cat >/etc/cloudflare.ini <<-EOL
 dns_cloudflare_email = ${CLOUDFLARE_EMAIL}
@@ -181,7 +183,7 @@ fi
 [ -L /etc/nginx/sites-enabled/default ] && rm -f /etc/nginx/sites-enabled/default
 
 if [ ! -f /etc/nginx/sites-available/${STREAM_URL} ]; then
-    printf "${PURPLE}*${NC} Creating nginx proxy...\n"
+    printf "${BLUE}*${NC} Creating nginx proxy...\n"
     printf "$nginx_tpl" | sed -e "s|STREAM_URL|$STREAM_URL|" > /etc/nginx/sites-available/${STREAM_URL}
 fi
 
@@ -199,13 +201,16 @@ EOL
 
 systemd-tmpfiles --create --remove # --boot
 
-printf "${PURPLE}*${NC} Creating systemd units...\n"
+printf "${BLUE}*${NC} Creating systemd units...\n"
 printf "$icecast_service_tpl" > /etc/systemd/system/icecast2.service
 printf "$liquidsoap_service_tpl" > /etc/systemd/system/liquidsoap.service
 
 [ "$STREAM_FORMAT" == "vorbis" ] && STREAM_EXT="ogg" || STREAM_EXT="mp3"
 
+printf "${BLUE}*${NC} Configuring Icecast...\n"
 curl -sL "$icecast_tpl" | sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" -e "s|RELAY_PASSWD|$RELAY_PASSWD|" -e "s|ADMIN_PASSWD|$ADMIN_PASSWD|" > /etc/icecast2/icecast.xml
+
+printf "${BLUE}*${NC} Configuring LiquidSoap...\n"
 curl -sL "$radio_tpl" | \
     sed -e "s|SOURCE_PASSWD|$SOURCE_PASSWD|" \
     -e "s|STREAM_FORMAT|$STREAM_FORMAT|g" \
@@ -222,6 +227,7 @@ curl -sL "$youtube_tpl" | \
     -e "s|STREAM_DESCRIPTION|$STREAM_DESCRIPTION|g" \
     -e "s|STREAM_GENRE|$STREAM_GENRE|g" > /etc/liquidsoap/youtube.liq
 
+printf "${BLUE}*${NC} Installing cron script...\n"
 printf "$cron_tpl" > /opt/liquidsoap/scripts/cron.sh
 
 printf "${PURPLE}*${NC} Downloading samples...\n"
@@ -263,21 +269,21 @@ fi
 
 [ ! -d /usr/share/liquidsoap/1.4.1 ] && mkdir /usr/share/liquidsoap/1.4.1
 
-printf "${PURPLE}*${NC} Running first cron job(playlists)...\n"
+printf "${BLUE}*${NC} Running first cron job(playlists)...\n"
 /bin/bash /opt/liquidsoap/scripts/cron.sh principal
 /bin/bash /opt/liquidsoap/scripts/cron.sh eletronica
 /bin/bash /opt/liquidsoap/scripts/cron.sh rock
 
-touch /var/log/liquidsoap.log
+touch /var/log/liquidsoap.log /var/log/icecast.log
 
-printf "${PURPLE}*${NC} Fixing permissions...\n"
-chown -R icecast:icecast /var/log/icecast2 $ICECAST_PATH /etc/icecast2
+printf "${YELLOW}*${NC} Fixing permissions...\n"
+chown -R icecast:icecast /var/log/icecast2 $ICECAST_PATH /etc/icecast2 /var/log/icecast.log
 chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log /usr/share/liquidsoap
 
 [ ! -d /usr/share/liquidsoap/libs ] && mkdir -p /usr/share/liquidsoap/libs
-ln -fs /usr/share/liquidsoap/libs /usr/share/liquidsoap/1.4.1
+ln -fs /usr/share/liquidsoap/libs /usr/share/liquidsoap/1.4.1 2> /dev/null
 
 systemctl daemon-reload 
-printf "${PURPLE}*${NC} Enabling services...\n"
+printf "${BLUE}*${NC} Enabling & starting services...\n"
 systemctl enable icecast liquidsoap &> /dev/null
 systemctl restart nginx cron icecast liquidsoap
