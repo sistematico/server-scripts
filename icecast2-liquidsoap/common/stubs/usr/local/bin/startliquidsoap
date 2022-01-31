@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+eval $(opam env --switch=4.10.0)
+
+liquidsoap "$@"

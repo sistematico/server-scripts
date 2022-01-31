@@ -9,7 +9,7 @@ Type=forking
 #Type=oneshot
 User=liquidsoap
 PIDFile=/run/liquidsoap.pid
-ExecStart=/usr/bin/liquidsoap /etc/liquidsoap/youtube.liq
+ExecStart=/usr/local/bin/startliquidsoap /etc/liquidsoap/youtube.liq
 Restart=always
 RestartSec=10s
 

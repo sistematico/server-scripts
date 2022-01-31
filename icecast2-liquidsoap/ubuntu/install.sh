@@ -118,29 +118,11 @@ cd /tmp/icecast-${ICECAST_VERSION}
 make 1> /dev/null 2> /dev/null
 make install 1> /dev/null 2> /dev/null
 
-printf "${BLUE}*${NC} Building opam...\n"
-curl -sL https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-x86_64-linux > /tmp/opam-2.1.2-x86_64-linux
-install /tmp/opam-2.1.2-x86_64-linux /usr/local/bin/opam
-
-printf "${GREEN}*${NC} Installing liquidsoap through opam...\n"
-
-export OPAMROOTISOK=true
-
-opam init -qy 1> /dev/null 2> /dev/null
-#eval $(opam env) 1> /dev/null 2> /dev/null
-
-opam switch create 4.10.0 1> /dev/null 2> /dev/null
-eval $(opam env --switch=4.10.0) 1> /dev/null 2> /dev/null
-
-opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
-opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
-
 printf "${YELLOW}*${NC} Creating icecast user...\n"
 
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$ICECAST_PW")
-
 if ! id "icecast" &>/dev/null; then
-    useradd -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" -U icecast
+    useradd -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" icecast
 else
     usermod -m -p "$pass" -d /home/icecast -s /bin/bash -c "Icecast System User" icecast
 fi
@@ -148,14 +130,50 @@ fi
 printf "${YELLOW}*${NC} Creating liquidsoap user...\n"
 
 pass=$(perl -e 'print crypt($ARGV[0], "password")' "$LIQUIDSOAP_PW")
-
 if ! id "icecast" &>/dev/null; then
-    useradd -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "Liquidsoap System User" -U liquidsoap
+    useradd -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "Liquidsoap System User" liquidsoap
 else
-    usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "Icecast System User" -g liquidsoap liquidsoap
+    usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "Icecast System User" liquidsoap
 fi
 
 mkdir -p /etc/icecast2 /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{principal,eletronica,rock} 2> /dev/null
+
+if ! grep --quiet 'opam-init' /opt/liquidsoap/.bash_profile; then
+    echo 'test -r /opt/liquidsoap/.opam/opam-init/init.sh && . /opt/liquidsoap/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true' >> /opt/liquidsoap/.bash_profile
+fi
+
+chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log /usr/share/liquidsoap 2> /dev/null
+
+printf "${BLUE}*${NC} Building opam...\n"
+curl -sL https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-x86_64-linux > /tmp/opam-2.1.2-x86_64-linux
+install /tmp/opam-2.1.2-x86_64-linux /usr/local/bin/opam
+
+#if [ $(liquidsoap --version 2> /dev/null | head -n1) != "Liquidsoap 2.0.2" ]; then
+    printf "${GREEN}*${NC} Installing liquidsoap through opam...\n"
+
+    #export OPAMROOTISOK=true
+
+    #opam init -qy 1> /dev/null 2> /dev/null
+    sudo -H -u liquidsoap bash -c 'opam init -qy 1> /dev/null 2> /dev/null'
+
+    #opam switch create 4.10.0 1> /dev/null 2> /dev/null
+    sudo -H -u liquidsoap bash -c 'opam switch create 4.10.0 1> /dev/null 2> /dev/null'
+
+    #eval $(opam env --switch=4.10.0) 1> /dev/null 2> /dev/null
+    sudo -H -u liquidsoap bash -c 'eval $(opam env --switch=4.10.0) 1> /dev/null 2> /dev/null'
+
+    #opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
+    sudo -H -u liquidsoap bash -c 'opam depext taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
+
+    #opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null
+    sudo -H -u liquidsoap bash -c 'opam install taglib mad lame vorbis cry samplerate ocurl liquidsoap -y 1> /dev/null 2> /dev/null'
+
+# else
+#     printf "${YELLOW}*${NC} Liquidsoap already installed...\n"
+# fi
+
+curl -sL https://raw.githubusercontent.com/sistematico/server-scripts/main/icecast2-liquidsoap/common/stubs/usr/local/bin/startliquidsoap > /usr/local/bin/startliquidsoap
+chmod +x /usr/local/bin/startliquidsoap
 
 printf "${BLUE}*${NC} Creating certs...\n"
 if [ ! -f /etc/cloudflare.ini ]; then
