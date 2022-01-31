@@ -10,18 +10,18 @@ Pin: release a=*
 Pin-Priority: -10
 EOF
 
-systemctl --now disable \ 
-snapd.apparmor.service \ 
-snapd.autoimport.service \ 
-snapd.core-fixup.service \ 
-snapd.failure.service \ 
-snapd.recovery-chooser-trigger.service \ 
-snapd.seeded.service \ 
-snapd.service \ 
-snapd.snap-repair.service \ 
-snapd.system-shutdown.service \ 
-snapd.socket \ 
-snapd.snap-repair.timer 2> /dev/null
+systemctl --now disable \
+    snapd.apparmor.service \
+    snapd.autoimport.service \
+    snapd.core-fixup.service \
+    snapd.failure.service \
+    snapd.recovery-chooser-trigger.service \
+    snapd.seeded.service \
+    snapd.service \
+    snapd.snap-repair.service \
+    snapd.system-shutdown.service \
+    snapd.socket \
+    snapd.snap-repair.timer 2> /dev/null
 
 umount /snap/core* -lf 2> /dev/null
 
@@ -34,4 +34,4 @@ snap remove core18 2> /dev/null
 
 apt remove snapd --purge 2>&1
 
-rm -rf /snap /var/snap /var/lib/snapd /var/cache/snapd /usr/lib/snapd 2>&1
+rm -rf /snap /var/snap /var/lib/snapd /var/cache/snapd /usr/lib/snapd 2> /dev/null

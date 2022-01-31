@@ -10,6 +10,7 @@
 
 # https://downloads.xiph.org/releases/icecast/icecast-2.4.4.tar.gz
 ICECAST_VERSION="2.4.4"
+ICECAST_PATH="/usr/share/icecast"
 
 BLACK='\033[0;30m'
 RED='\033[0;31m'
@@ -165,13 +166,13 @@ fi
 chmod 600 /etc/cloudflare.ini
 
 if [ ! -f /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem ] && [ ! -f /etc/letsencrypt/live/${STREAM_URL}/privkey.pem ]; then
-    certbot certonly -n -m "${CLOUDFLARE_EMAIL}" --agree-tos --dns-cloudflare --dns-cloudflare-credentials /etc/cloudflare.ini --webroot-path="/usr/share/icecast2/web" -d "${STREAM_URL}"
+    certbot certonly -n -m "${CLOUDFLARE_EMAIL}" --agree-tos --dns-cloudflare --dns-cloudflare-credentials /etc/cloudflare.ini --webroot-path="$ICECAST_PATH/web" -d "${STREAM_URL}"
 fi
 
 if [ -f /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem ] && [ -f /etc/letsencrypt/live/${STREAM_URL}/privkey.pem ]; then
-    cat /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem /etc/letsencrypt/live/${STREAM_URL}/privkey.pem > /usr/share/icecast2/icecast.pem
+    cat /etc/letsencrypt/live/${STREAM_URL}/fullchain.pem /etc/letsencrypt/live/${STREAM_URL}/privkey.pem > $ICECAST_PATH/icecast.pem
     
-    chmod 600 /usr/share/icecast2/icecast.pem
+    chmod 600 $ICECAST_PATH/icecast.pem
 else
     echo "Error in certificates generation. Check your STREAM_URL in .env file."
     exit 1
@@ -270,7 +271,7 @@ printf "${PURPLE}*${NC} Running first cron job(playlists)...\n"
 touch /var/log/liquidsoap.log
 
 printf "${PURPLE}*${NC} Fixing permissions...\n"
-chown -R icecast:icecast /var/log/icecast2 /usr/share/icecast2 /etc/icecast2
+chown -R icecast:icecast /var/log/icecast2 $ICECAST_PATH /etc/icecast2
 chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log /usr/share/liquidsoap
 
 [ ! -d /usr/share/liquidsoap/libs ] && mkdir -p /usr/share/liquidsoap/libs
