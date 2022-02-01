@@ -1,21 +1,24 @@
 set("log.file.path", "/tmp/test.dog")
 set("log.level", 4)
 
-brasset = single("youtube-dl:https://youtu.be/V7gwPsuccxg";)
-lasset = single("youtube-dl:https://youtu.be/hq74Y1yUgq0";)
-basset = single("youtube-dl:https://youtu.be/pC7u3UgN3s4";)
+brasset = mksafe(single("youtube-dl:https://youtu.be/V7gwPsuccxg"))
+lasset = mksafe(single("youtube-dl:https://youtu.be/hq74Y1yUgq0"))
+basset = mksafe(single("youtube-dl:https://youtu.be/pC7u3UgN3s4"))
 
-hiho = fallback(track_sensitive=true,[(brasset),(lasset),(basset)])
+youtube = fallback(track_sensitive=true,[brasset,lasset,basset])
+emergency = single("~/music/eletronica/Chico Rose x 71 Digits – Somebody is Watching Me.mp3")
 
-output.icecast(%vorbis(channels=2, samplerate=48000, quality=0.4),
-    fallible=true,
+#fallible=true,
+
+output.icecast(%vorbis
+    (channels=2, samplerate=44100, quality=0.3),
     host="localhost",
     port=8000,
     password="hackme",
     mount="principal",
-    description="Stream from Ersboda",
+    name="RadioChat",
+    description="",
     genre="Eclectic",
-    url="https://mustafejen.se/~per";,
-    name="mustafejen",
-    hiho
+    url="https://radiochat.com.br",
+    fallback(track_sensitive=false,[youtube,emergency])
 )

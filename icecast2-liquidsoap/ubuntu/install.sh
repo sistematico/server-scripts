@@ -143,7 +143,7 @@ else
     usermod -m -p "$pass" -d /opt/liquidsoap -s /bin/bash -c "Icecast System User" liquidsoap
 fi
 
-mkdir -p /var/log/icecast2 /etc/icecast2 /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{principal,eletronica,rock} 2> /dev/null
+mkdir -p /var/log/icecast /var/log/icecast2 /etc/icecast2 /etc/liquidsoap /opt/liquidsoap/{playlist,scripts} /opt/liquidsoap/music/{principal,eletronica,rock} 2> /dev/null
 
 if ! grep --quiet 'opam-init' /opt/liquidsoap/.bash_profile; then
     echo 'test -r /opt/liquidsoap/.opam/opam-init/init.sh && . /opt/liquidsoap/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true' >> /opt/liquidsoap/.bash_profile
@@ -302,7 +302,7 @@ printf "${BLUE}*${NC} Running first cron job(playlists)...\n"
 touch /var/log/liquidsoap.log
 
 printf "${YELLOW}*${NC} Fixing permissions...\n"
-chown -R icecast:icecast /var/log/icecast2 $ICECAST_PATH /etc/icecast2
+chown -R icecast:icecast /var/log/icecast /var/log/icecast2 $ICECAST_PATH /etc/icecast2 2> /dev/null
 chown -R liquidsoap:liquidsoap /etc/liquidsoap /opt/liquidsoap /var/log/liquidsoap.log /usr/share/liquidsoap
 
 [ ! -d /usr/share/liquidsoap/libs ] && mkdir -p /usr/share/liquidsoap/libs
