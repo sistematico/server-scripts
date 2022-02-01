@@ -1,17 +1,14 @@
-set("log.file.path", "/tmp/test.dog")
+#!/usr/bin/liquidsoap
+
+set("log.file.path", "/var/log/liquidsoap.log")
 set("log.level", 4)
+set("log.stdout", true)
 
-brasset = mksafe(single("youtube-dl:https://youtu.be/V7gwPsuccxg"))
-lasset = mksafe(single("youtube-dl:https://youtu.be/hq74Y1yUgq0"))
-basset = mksafe(single("youtube-dl:https://youtu.be/pC7u3UgN3s4"))
+youtube = single("youtube-dl:V7gwPsuccxg")
+emerg = single("~/music/principal/Chico Rose x 71 Digits – Somebody is Watching Me.mp3")
 
-youtube = fallback(track_sensitive=true,[brasset,lasset,basset])
-emergency = single("~/music/eletronica/Chico Rose x 71 Digits – Somebody is Watching Me.mp3")
-
-#fallible=true,
-
-output.icecast(%vorbis
-    (channels=2, samplerate=44100, quality=0.3),
+output.icecast(%vorbis(channels=2, samplerate=48000, quality=0.4),
+    fallible=true,
     host="localhost",
     port=8000,
     password="hackme",
@@ -20,5 +17,5 @@ output.icecast(%vorbis
     description="",
     genre="Eclectic",
     url="https://radiochat.com.br",
-    fallback(track_sensitive=false,[youtube,emergency])
+    fallback(track_sensitive=false, [youtube,emerg])
 )
